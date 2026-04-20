@@ -3,8 +3,6 @@
 #define DT 3
 #define SCK 2
 #define BUTTON 7
-#define LED 8
-#define LED 
 
 HX711 scale;
 
@@ -29,15 +27,7 @@ void loop() {
 
   if (digitalRead(BUTTON) == LOW) {
     Serial.println("WINNER");
-
-    for (int i=0; i<6; i++){
-      digitalWrite(LED, HIGH);
-      delay(150)
-      digitalWrite(LED, LOW);
-      delay(150)
-    }
-
-    delay(300);
+    delay(500);
   }
 }
 
