@@ -1,9 +1,9 @@
 import serial
 import time
 
-ser = serial.Serial('/dev/ttyACM0', 9600, timeout=1)
+ser = serial.Serial('/dev/ttyUSB0', 9600, timeout=1)
 
-WEB_PATH = "/opt/lampp/htdocs/arduino-test/"
+WEB_PATH = "/opt/lampp/htdocs/gold-2-cash/"
 
 current_weight = "0"
 
