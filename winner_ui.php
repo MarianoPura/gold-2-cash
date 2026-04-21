@@ -44,6 +44,10 @@
             pointer-events: none;
         }
 
+        .chest-coins {
+            content: url('./assets/chest-coins-2.png');
+        }
+
         .casino-board {
             border: 8px solid #ffd700;
             border-radius: 20px;
@@ -129,7 +133,23 @@
                 box-shadow: 0 0 60px #ffd700, inset 0 0 40px #ffd700;
                 border-color: #ffd700;
             }
+
+            0% {
+                box-shadow: 0 0 40px #b8860b, inset 0 0 30px #b8860b;
+                border-color: #b8860b;
+            }
+
+            50% {
+                box-shadow: 0 0 80px #fff7a1, inset 0 0 50px #fff7a1;
+                border-color: #fff7a1;
+            }
+
+            100% {
+                box-shadow: 0 0 60px #ffd700, inset 0 0 40px #ffd700;
+                border-color: #ffd700;
+            }
         }
+
 
         @keyframes titleJackpot {
             0% {
@@ -156,11 +176,30 @@
                 transform: translateY(0);
                 box-shadow: inset 0 0 30px rgba(255, 215, 0, 0.4);
             }
+
+            0% {
+                transform: translateY(0);
+                box-shadow: inset 0 0 30px rgba(255, 215, 0, 0.4);
+            }
+
+            50% {
+                transform: translateY(-4px);
+                box-shadow: inset 0 0 60px rgba(255, 215, 0, 0.9);
+            }
+
+            100% {
+                transform: translateY(0);
+                box-shadow: inset 0 0 30px rgba(255, 215, 0, 0.4);
+            }
         }
 
         /* Portrait Screen Adjustments */
         @media screen and (orientation: portrait),
         screen and (max-width: 600px) {
+            .chest-coins {
+                content: url('./assets/chest-coins.png');
+            }
+
             .casino-board {
                 padding: 40px 20px;
                 border-width: 5px;
@@ -169,10 +208,12 @@
                 margin-bottom: 150px;
             }
 
+
             #title {
                 font-size: clamp(2.5rem, 10vw, 5rem);
                 margin-bottom: 30px;
             }
+
 
             #weight-container {
                 padding: 20px 15px;
@@ -180,9 +221,11 @@
                 width: 100%;
             }
 
+
             #weight {
                 font-size: clamp(4rem, 18vw, 8rem);
             }
+
 
             .unit {
                 font-size: 1.5rem;
@@ -201,7 +244,7 @@
     <canvas id="canvas"></canvas>
 
     <div class="casino-board">
-        <h1 id="title">WE HAVE JACKPOT WINNER!</h1>
+        <h1 id="title">WE HAVE A JACKPOT WINNER!</h1>
         <div id="weight-container">
             <span id="weight">0.00</span><span class="unit">g</span>
         </div>
@@ -225,6 +268,9 @@
             }
         }
 
+        let currentWeight = 0;
+        let targetWeight = 0;
+        let isAnimatingWeight = false;
         let currentWeight = 0;
         let targetWeight = 0;
         let isAnimatingWeight = false;

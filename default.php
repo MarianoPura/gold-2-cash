@@ -1,6 +1,7 @@
 <!DOCTYPE html>
 <html>
 
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -39,6 +40,12 @@
             height: 30%;
         }
 
+
+        .chest-coins {
+            content: url('./assets/chest-coins-2.png');
+            display: inline-block;
+        }
+
         .casino-board {
             border: 18px solid #ffd700;
             border-radius: 20px;
@@ -71,6 +78,7 @@
             border-radius: 10px;
             padding: 30px 60px;
             display: inline-block;
+            box-shadow: inset 0 0 30px rgba(255, 215, 0, 0.2), 0 5px 15px rgba(0, 0, 0, 0.8);
             box-shadow: inset 0 0 30px rgba(255, 215, 0, 0.2), 0 5px 15px rgba(0, 0, 0, 0.8);
             position: relative;
         }
@@ -123,9 +131,27 @@
                 box-shadow: 0 0 50px #ffea00, inset 0 0 30px #000;
                 border-color: #ffea33;
             }
+
+            0% {
+                box-shadow: 0 0 20px #ffd700, inset 0 0 10px #000;
+                border-color: #ccaa00;
+            }
+
+            100% {
+                box-shadow: 0 0 50px #ffea00, inset 0 0 30px #000;
+                border-color: #ffea33;
+            }
         }
 
         @keyframes titleBreathe {
+            0% {
+                text-shadow: 0 0 10px rgba(255, 215, 0, 0.3);
+            }
+
+            100% {
+                text-shadow: 0 0 30px rgba(255, 215, 0, 0.7);
+            }
+
             0% {
                 text-shadow: 0 0 10px rgba(255, 215, 0, 0.3);
             }
@@ -158,11 +184,37 @@
                 opacity: 0.85;
                 text-shadow: 0 0 5px rgba(255, 215, 0, 0.3);
             }
+
+            0%,
+            19.999%,
+            22%,
+            62.999%,
+            64%,
+            64.999%,
+            70%,
+            100% {
+                opacity: 1;
+                text-shadow: 0 0 20px rgba(255, 215, 0, 0.8);
+            }
+
+            20%,
+            21.999%,
+            63%,
+            63.999%,
+            65%,
+            69.999% {
+                opacity: 0.85;
+                text-shadow: 0 0 5px rgba(255, 215, 0, 0.3);
+            }
         }
 
         /* Portrait Screen Adjustments */
         @media screen and (orientation: portrait),
         screen and (max-width: 600px) {
+            .chest-coins {
+                content: url('./assets/chest-coins.png');
+            }
+
             .casino-board {
                 padding: 40px 20px;
                 border-width: 18px;
@@ -171,10 +223,12 @@
                 margin-bottom: 150px;
             }
 
+
             #title {
                 font-size: clamp(3rem, 12vw, 5rem);
                 margin-bottom: 30px;
             }
+
 
             #weight-container {
                 padding: 20px 15px;
@@ -182,9 +236,11 @@
                 width: 100%;
             }
 
+
             #weight {
                 font-size: clamp(4rem, 18vw, 8rem);
             }
+
 
             .unit {
                 font-size: 1.5rem;
