@@ -55,7 +55,7 @@
         }
 
         .casino-board {
-            border: 8px solid #ffd700;
+            border: 18px solid #ffd700;
             border-radius: 20px;
             padding: 50px 50px;
             background: linear-gradient(135deg, #003181, #000c3b);
@@ -196,7 +196,7 @@
 
             .casino-board {
                 padding: 10px 10px;
-                border-width: 5px;
+                border-width: 18px;
                 width: 90vw;
                 box-sizing: border-box;
                 margin-bottom: 150px;
