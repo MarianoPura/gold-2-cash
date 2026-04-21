@@ -59,7 +59,7 @@
         }
 
         #title {
-            font-family: 'Lilita One', sans-serif;
+            font-family: 'FuturaCyrillicBold', sans-serif;
             font-size: 5rem;
             margin-bottom: 40px;
             margin-top: 0;
@@ -208,9 +208,7 @@
             }
         }
 
-        /* Portrait Screen Adjustments */
-        @media screen and (orientation: portrait),
-        screen and (max-width: 600px) {
+        @media (max-width: 1100px) {
             .chest-coins {
                 content: url('./assets/chest-coins.png');
             }
@@ -227,6 +225,7 @@
             #title {
                 font-size: clamp(3rem, 12vw, 5rem);
                 margin-bottom: 30px;
+                line-height: -30px;
             }
 
 
@@ -252,6 +251,12 @@
                 height: auto;
             }
         }
+
+        @media (max-width: 900px) {
+            .chest-coins {
+                content: url('./assets/chest-coins-mobile.png');
+            }
+        }
     </style>
 </head>
 
@@ -259,7 +264,7 @@
     <canvas id="canvas"></canvas>
 
     <div class="casino-board">
-        <h1 id="title">Gold For Cash</h1>
+        <h1 id="title" style="letter-spacing: normal;">Gold For Cash</h1>
         <div id="weight-container">
             <span id="weight">0</span><span class="unit">g</span>
         </div>
@@ -345,7 +350,7 @@
             ambientDust.push({
                 x: random(0, cw),
                 y: random(0, ch),
-                r: random(1, 3.5),
+                r: random(4, 6.5),
                 vy: random(-0.8, -0.2),
                 vx: random(-0.3, 0.3),
                 opacity: random(0.1, 0.6)
