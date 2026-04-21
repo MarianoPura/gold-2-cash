@@ -3,7 +3,7 @@ import time
 import statistics
 from collections import Counter
 
-ser = serial.Serial('/dev/ttyUSB1', 57600, timeout=1)
+ser = serial.Serial('/dev/ttyUSB0', 57600, timeout=1)
 serLimit = []
 
 WEB_PATH = "/var/www/html/gold-2-cash/"
@@ -20,27 +20,21 @@ def show_weight (weight):
         else:
             f.write(str(int(round(float(weight)))))
 
-def show_winner(force_value=None):
+def show_winner():
     path = WEB_PATH + "stats.txt"
 
-    if force_value is not None:
-        value = str(force_value)
-    else:
-        try:
-            with open(path, "r") as f:
-                current = f.read().strip()
-            value = "0" if current == "1" else "1"
-        except FileNotFoundError:
-            value = "1"
+    with open(path, "r") as f:
+        value = f.read().strip()
 
     with open(path, "w") as f:
-        f.write(value)
+        if value == "1":
+            f.write("0")
+        else:
+            f.write("1")
 
 while True:
     try:
-        line = ser.readline().decode('utf-8', errors='replace').rstrip()
-        if line:
-            print("RECEIVED:", line)
+        line = ser.readline().decode('utf-8').rstrip()
         
         if line.startswith("WEIGHT:"):
             weight = float(line.split(":")[1])
@@ -88,17 +82,19 @@ while True:
             show_winner()
             print("WINNER SAVED")
             
-        elif line.startswith("TARE"):
+        elif line.startswith("TARE DONE"):
             print("TARE DONE")
-        elif line.startswith("RESET"):
+        elif line.startswith("RESET DONE"):
             is_locked = False
             capture_start_time = None
             show_weight(0)
             current_weight = 0
             current_winner = "0"
             serLimit.clear()
-            show_winner(0) # Now works with the updated function
+            # Directly reset the winner file to "0"
+            with open(WEB_PATH + "stats.txt", "w") as f:
+                f.write("0")
             print("RESET DONE")
             
     except Exception as e:
-        print("ERROR:", e)
+        pass
