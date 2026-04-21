@@ -1,79 +1,34 @@
-#include <HX711_ADC.h>
+#include "HX711.h"
 
-// Pin Definitions
-#define DT_PIN 13
-#define SCK_PIN 16
-#define BUTTON_PIN 17
-#define LED_PIN 18
+#define DT 13
+#define SCK 16
+#define BUTTON 17
 
-HX711_ADC scale(DT_PIN, SCK_PIN);
-float calibration_factor = -7050.0;
+HX711 scale;
+
+// float calibration_factor = 108.55;
 
 void setup() {
   Serial.begin(9600);
-  delay(500); // Give serial a moment to stabilize
-  Serial.println("\n--- SYSTEM DIAGNOSTICS STARTING ---");
+  scale.begin(DT, SCK);
+  scale.set_scale();
+  scale.tare();
 
-  // 1. Check LED Pin
-  pinMode(LED_PIN, OUTPUT);
-  Serial.println("Testing LED Pin (18)...");
-  digitalWrite(LED_PIN, HIGH);
-  delay(200);
-  digitalWrite(LED_PIN, LOW);
-  Serial.println("-> LED Test pulse sent.");
+  pinMode(BUTTON, INPUT_PULLUP);
 
-  // 2. Check Button Pin
-  pinMode(BUTTON_PIN, INPUT_PULLUP);
-  Serial.print("Testing Button Pin (17)... Status: ");
-  if (digitalRead(BUTTON_PIN) == HIGH) {
-    Serial.println("OK (Idle High)");
-  } else {
-    Serial.println("WARNING (Button reads LOW - check for short circuit or stuck button)");
-  }
-
-  // 3. Check HX711 Connection
-  Serial.println("Testing HX711 Scale Connection (Pins 13, 16)...");
-  scale.begin();
-  
-  unsigned long stabilizingTime = 2000; 
-  boolean _tare = true; 
-  scale.start(stabilizingTime, _tare);
-
-  if (scale.getTareTimeoutFlag()) {
-    Serial.println("!!! SCALE ERROR: Check DT/SCK wiring. No response from HX711.");
-  } else {
-    scale.setCalFactor(calibration_factor);
-    Serial.println("-> Scale initialized successfully.");
-  }
-
-  Serial.println("--- DIAGNOSTICS COMPLETE ---\n");
 }
 
 void loop() {
-  scale.update();
+  float weight = scale.get_units(10);
 
-  // Print weight every 500ms
-  static unsigned long lastPrint = 0;
-  if (millis() - lastPrint > 500) {
-    if (scale.getTareTimeoutFlag()) {
-      Serial.println("WEIGHT ERROR: Scale Disconnected");
-    } else {
-      float weight = scale.getData();
-      Serial.print("Current Weight: ");
-      Serial.println(weight);
-    }
-    lastPrint = millis();
-  }
+  Serial.print("WEIGHT:");
+  Serial.println(weight);
+  delay(500);
 
-  // Button interaction
-  if (digitalRead(BUTTON_PIN) == LOW) {
-    Serial.println(">> BUTTON PRESSED: Triggering LED sequence.");
-    for (int i = 0; i < 6; i++) {
-      digitalWrite(LED_PIN, HIGH);
-      delay(150);
-      digitalWrite(LED_PIN, LOW);
-      delay(150);
-    }
-    delay(300);
+  if (digitalRead(BUTTON) == LOW) {
+    Serial.println("WINNER");
+    delay(500);
   }
+  delay(200);
+
 }
