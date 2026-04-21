@@ -1,15 +1,16 @@
 <!DOCTYPE html>
 <html>
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Gold 2 Cash - Default</title>
+    <title>Gold For Cash</title>
     <style>
         @import url('fonts/fonts.css');
 
         body {
-            background-color: #0b0800;
-            background-image: radial-gradient(circle at center, #2e2200 0%, #000 100%);
+            background-color: #000c3b;
+            background-image: radial-gradient(circle at center, #003181 0%, #000c3b 100%);
             color: #fff;
             text-align: center;
             font-family: 'Playfair Display', serif;
@@ -33,23 +34,30 @@
             pointer-events: none;
         }
 
+        .chest-coins {
+            width: 100vw;
+            height: 30%;
+        }
+
         .casino-board {
-            border: 8px solid #ffd700;
+            border: 18px solid #ffd700;
             border-radius: 20px;
             padding: 50px 80px;
-            background: linear-gradient(135deg, #1f1a00, #0a0800);
+            background: linear-gradient(135deg, #003181, #000c3b);
             box-shadow: 0 0 40px #ffd700, inset 0 0 20px #000;
             position: relative;
             z-index: 10;
             animation: boardBreathe 4s ease-in-out infinite alternate;
+            margin-bottom: 250px;
         }
 
         #title {
+            font-family: 'Lilita One', sans-serif;
             font-size: 5rem;
             margin-bottom: 40px;
             margin-top: 0;
             text-transform: uppercase;
-            background: linear-gradient(to bottom, #fff7a1, #ffd700, #b8860b);
+            background: linear-gradient(to bottom, #fef4b7, #e9ca4c, #fef4b7);
             -webkit-background-clip: text;
             -webkit-text-fill-color: transparent;
             text-shadow: 0 0 20px rgba(255, 215, 0, 0.4);
@@ -58,12 +66,12 @@
         }
 
         #weight-container {
-            background: #000;
+            background: linear-gradient(135deg, #003181, #000c3b);
             border: 4px solid #b8860b;
             border-radius: 10px;
             padding: 30px 60px;
             display: inline-block;
-            box-shadow: inset 0 0 30px rgba(255, 215, 0, 0.2), 0 5px 15px rgba(0,0,0,0.8);
+            box-shadow: inset 0 0 30px rgba(255, 215, 0, 0.2), 0 5px 15px rgba(0, 0, 0, 0.8);
             position: relative;
         }
 
@@ -73,7 +81,7 @@
             top: -14px;
             left: 50%;
             transform: translateX(-50%);
-            background: #111;
+            background: #000c3b;
             border: 2px solid #b8860b;
             border-radius: 5px;
             padding: 2px 15px;
@@ -97,7 +105,8 @@
 
         .unit {
             font-family: 'Arial', sans-serif;
-            font-size: 2rem;
+            font-weight: bold;
+            font-size: 4rem;
             color: #a38914;
             vertical-align: super;
             text-shadow: none;
@@ -105,43 +114,86 @@
         }
 
         @keyframes boardBreathe {
-            0% { box-shadow: 0 0 20px #ffd700, inset 0 0 10px #000; border-color: #ccaa00; }
-            100% { box-shadow: 0 0 50px #ffea00, inset 0 0 30px #000; border-color: #ffea33; }
+            0% {
+                box-shadow: 0 0 20px #ffd700, inset 0 0 10px #000;
+                border-color: #ccaa00;
+            }
+
+            100% {
+                box-shadow: 0 0 50px #ffea00, inset 0 0 30px #000;
+                border-color: #ffea33;
+            }
         }
 
         @keyframes titleBreathe {
-            0% { text-shadow: 0 0 10px rgba(255, 215, 0, 0.3); }
-            100% { text-shadow: 0 0 30px rgba(255, 215, 0, 0.7); }
+            0% {
+                text-shadow: 0 0 10px rgba(255, 215, 0, 0.3);
+            }
+
+            100% {
+                text-shadow: 0 0 30px rgba(255, 215, 0, 0.7);
+            }
         }
 
         @keyframes ledFlicker {
-            0%, 19.999%, 22%, 62.999%, 64%, 64.999%, 70%, 100% { opacity: 1; text-shadow: 0 0 20px rgba(255, 215, 0, 0.8); }
-            20%, 21.999%, 63%, 63.999%, 65%, 69.999% { opacity: 0.85; text-shadow: 0 0 5px rgba(255, 215, 0, 0.3); }
+
+            0%,
+            19.999%,
+            22%,
+            62.999%,
+            64%,
+            64.999%,
+            70%,
+            100% {
+                opacity: 1;
+                text-shadow: 0 0 20px rgba(255, 215, 0, 0.8);
+            }
+
+            20%,
+            21.999%,
+            63%,
+            63.999%,
+            65%,
+            69.999% {
+                opacity: 0.85;
+                text-shadow: 0 0 5px rgba(255, 215, 0, 0.3);
+            }
         }
 
         /* Portrait Screen Adjustments */
-        @media screen and (orientation: portrait), screen and (max-width: 600px) {
+        @media screen and (orientation: portrait),
+        screen and (max-width: 600px) {
             .casino-board {
                 padding: 40px 20px;
-                border-width: 5px;
+                border-width: 18px;
                 width: 90vw;
                 box-sizing: border-box;
+                margin-bottom: 150px;
             }
+
             #title {
                 font-size: clamp(3rem, 12vw, 5rem);
                 margin-bottom: 30px;
             }
+
             #weight-container {
                 padding: 20px 15px;
                 box-sizing: border-box;
                 width: 100%;
             }
+
             #weight {
                 font-size: clamp(4rem, 18vw, 8rem);
             }
+
             .unit {
                 font-size: 1.5rem;
                 margin-left: 5px;
+            }
+
+            .chest-coins {
+                width: 100vw;
+                height: auto;
             }
         }
     </style>
@@ -151,118 +203,120 @@
     <canvas id="canvas"></canvas>
 
     <div class="casino-board">
-        <h1 id="title">Gold2Cash</h1>
+        <h1 id="title">Gold For Cash</h1>
         <div id="weight-container">
-            <span id="weight">0.00</span><span class="unit">g</span>
+            <span id="weight">0</span><span class="unit">g</span>
         </div>
     </div>
+    <div><img class="chest-coins"
+            style="filter: drop-shadow(0px 0px 32px #ffd700); position: absolute; bottom: 0; left: 0;"
+            src="./assets/chest-coins.png" alt="">
+    </div>
 
-<script>
-function updateWeight(val){
-    let newVal = parseFloat(val);
-    if(isNaN(newVal)) return;
-    
-    if(targetWeight !== newVal) {
-        targetWeight = newVal;
-        currentWeight = 0; // Always start counting from 0
-        if(!isAnimatingWeight) {
-            animateWeightDisplay();
+    <script>
+        function updateWeight(val) {
+            let newVal = parseFloat(val);
+            if (isNaN(newVal)) return;
+
+            if (targetWeight !== newVal) {
+                targetWeight = newVal;
+                currentWeight = 0;
+                if (!isAnimatingWeight) {
+                    animateWeightDisplay();
+                }
+            }
         }
-    }
-}
 
-let currentWeight = 0;
-let targetWeight = 0;
-let isAnimatingWeight = false;
+        let currentWeight = 0;
+        let targetWeight = 0;
+        let isAnimatingWeight = false;
 
-function animateWeightDisplay(){
-    let diff = targetWeight - currentWeight;
-    
-    if(Math.abs(diff) < 0.01) {
-        currentWeight = targetWeight;
-        document.getElementById("weight").innerText = currentWeight.toFixed(2);
-        isAnimatingWeight = false;
-        return;
-    }
-    
-    isAnimatingWeight = true;
-    currentWeight += diff * 0.03; // approach target slower (3% each frame)
-    document.getElementById("weight").innerText = currentWeight.toFixed(2);
-    
-    requestAnimationFrame(animateWeightDisplay);
-}
+        function animateWeightDisplay() {
+            let diff = targetWeight - currentWeight;
 
-// Fetch weight periodically
-setInterval(()=>{
- fetch("weight.php")
- .then(r=>r.text())
- .then(t=>updateWeight(t))
- .catch(e=>console.log(e));
-},200);
+            if (Math.abs(diff) < 1) {
+                currentWeight = targetWeight;
+                document.getElementById("weight").innerText = currentWeight.toFixed(0);
+                isAnimatingWeight = false;
+                return;
+            }
 
-// Pool winner status and jump to winner_ui when stats.txt == 1
-setInterval(()=>{
- fetch("winner.php")
- .then(r=>r.text())
- .then(t=>{
-   if(t.trim() == "1"){
-      window.location.reload(); // Reload will let index.php route to winner_ui.php
-   }
- })
- .catch(e=>console.log(e));
-},200);
+            isAnimatingWeight = true;
+            currentWeight += diff * 0.03;
+            document.getElementById("weight").innerText = currentWeight.toFixed(0);
 
-/* --- Ambient Particles --- */
-const canvas = document.getElementById("canvas");
-const ctx = canvas.getContext("2d");
-let cw = window.innerWidth;
-let ch = window.innerHeight;
-canvas.width = cw;
-canvas.height = ch;
+            requestAnimationFrame(animateWeightDisplay);
+        }
 
-window.addEventListener("resize", () => {
-    cw = window.innerWidth;
-    ch = window.innerHeight;
-    canvas.width = cw;
-    canvas.height = ch;
-});
+        setInterval(() => {
+            fetch("weight.php")
+                .then(r => r.text())
+                .then(t => updateWeight(t))
+                .catch(e => console.log(e));
+        }, 200);
 
-function random(min, max) {
-    return Math.random() * (max - min) + min;
-}
+        setInterval(() => {
+            fetch("winner.php")
+                .then(r => r.text())
+                .then(t => {
+                    if (t.trim() == "1") {
+                        window.location.reload();
+                    }
+                })
+                .catch(e => console.log(e));
+        }, 200);
 
-let ambientDust = [];
-for(let i = 0; i < 40; i++) {
-    ambientDust.push({
-        x: random(0, cw),
-        y: random(0, ch),
-        r: random(1, 3.5),
-        vy: random(-0.8, -0.2),
-        vx: random(-0.3, 0.3),
-        opacity: random(0.1, 0.6)
-    });
-}
+        const canvas = document.getElementById("canvas");
+        const ctx = canvas.getContext("2d");
+        let cw = window.innerWidth;
+        let ch = window.innerHeight;
+        canvas.width = cw;
+        canvas.height = ch;
 
-function animateDust() {
-    requestAnimationFrame(animateDust);
-    ctx.clearRect(0, 0, cw, ch);
-    
-    ambientDust.forEach(p => {
-        p.y += p.vy;
-        p.x += p.vx;
-        
-        if(p.y < -10) p.y = ch + 10;
-        if(p.x < -10) p.x = cw + 10;
-        if(p.x > cw + 10) p.x = -10;
-        
-        ctx.beginPath();
-        ctx.arc(p.x, p.y, p.r, 0, Math.PI * 2);
-        ctx.fillStyle = `rgba(255, 215, 0, ${p.opacity})`;
-        ctx.fill();
-    });
-}
+        window.addEventListener("resize", () => {
+            cw = window.innerWidth;
+            ch = window.innerHeight;
+            canvas.width = cw;
+            canvas.height = ch;
+        });
 
-animateDust();
-</script>
+        function random(min, max) {
+            return Math.random() * (max - min) + min;
+        }
+
+        let ambientDust = [];
+        for (let i = 0; i < 40; i++) {
+            ambientDust.push({
+                x: random(0, cw),
+                y: random(0, ch),
+                r: random(1, 3.5),
+                vy: random(-0.8, -0.2),
+                vx: random(-0.3, 0.3),
+                opacity: random(0.1, 0.6)
+            });
+        }
+
+        function animateDust() {
+            requestAnimationFrame(animateDust);
+            ctx.clearRect(0, 0, cw, ch);
+
+            ambientDust.forEach(p => {
+                p.y += p.vy;
+                p.x += p.vx;
+
+                if (p.y < -10) p.y = ch + 10;
+                if (p.x < -10) p.x = cw + 10;
+                if (p.x > cw + 10) p.x = -10;
+
+                ctx.beginPath();
+                ctx.arc(p.x, p.y, p.r, 0, Math.PI * 2);
+                ctx.fillStyle = `rgba(255, 215, 0, ${p.opacity})`;
+                ctx.fill();
+            });
+        }
+
+        animateDust();
+    </script>
 </body>
+
 </html>
