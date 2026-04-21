@@ -60,7 +60,7 @@
         }
 
         #title {
-            font-family: 'Lilita One', sans-serif;
+            font-family: 'FuturaCyrillicBold', sans-serif;
             font-size: 5rem;
             margin-bottom: 40px;
             margin-top: 0;
@@ -193,9 +193,7 @@
             }
         }
 
-        /* Portrait Screen Adjustments */
-        @media screen and (orientation: portrait),
-        screen and (max-width: 600px) {
+        @media (max-width: 1100px) {
             .chest-coins {
                 content: url('./assets/chest-coins.png');
             }
@@ -232,6 +230,12 @@
                 margin-left: 5px;
             }
         }
+
+        @media (max-width: 900px) {
+            .chest-coins {
+                content: url('./assets/chest-coins-mobile.png');
+            }
+        }
     </style>
 </head>
 
@@ -244,7 +248,7 @@
     <canvas id="canvas"></canvas>
 
     <div class="casino-board">
-        <h1 id="title">WE HAVE A JACKPOT WINNER!</h1>
+        <h1 id="title" style="letter-spacing: normal;">WE HAVE A JACKPOT WINNER!</h1>
         <div id="weight-container">
             <span id="weight">0.00</span><span class="unit">g</span>
         </div>
