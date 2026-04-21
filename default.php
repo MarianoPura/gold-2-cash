@@ -84,7 +84,6 @@
         }
 
         #weight-container::before {
-            content: 'WEIGHT';
             position: absolute;
             top: -14px;
             left: 50%;
@@ -223,9 +222,9 @@
 
 
             #title {
-                font-size: clamp(3rem, 12vw, 5rem);
+                font-size: clamp(6rem, 12vw, 10rem);
                 margin-bottom: 30px;
-                line-height: -30px;
+                line-height: 90px;
             }
 
 

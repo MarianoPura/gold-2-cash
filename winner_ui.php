@@ -45,13 +45,19 @@
         }
 
         .chest-coins {
+            width: 100vw;
+            height: 30%;
+        }
+
+        .chest-coins {
             content: url('./assets/chest-coins-2.png');
+            display: inline-block;
         }
 
         .casino-board {
             border: 8px solid #ffd700;
             border-radius: 20px;
-            padding: 50px 80px;
+            padding: 50px 50px;
             background: linear-gradient(135deg, #003181, #000c3b);
             position: relative;
             z-index: 10;
@@ -61,9 +67,7 @@
 
         #title {
             font-family: 'FuturaCyrillicBold', sans-serif;
-            font-size: 5rem;
-            margin-bottom: 40px;
-            margin-top: 0;
+            font-size: 6rem;
             text-transform: uppercase;
             background: linear-gradient(to bottom, #fff7a1, #ffd700, #b8860b);
             -webkit-background-clip: text;
@@ -71,15 +75,6 @@
             letter-spacing: 4px;
         }
 
-        #weight-container {
-            background: #003181;
-            border: 4px solid #b8860b;
-            border-radius: 10px;
-            padding: 30px 60px;
-            display: inline-block;
-            position: relative;
-            border-color: #ffe866;
-        }
 
         #weight-container::before {
             content: 'WEIGHT';
@@ -198,8 +193,9 @@
                 content: url('./assets/chest-coins.png');
             }
 
+
             .casino-board {
-                padding: 40px 20px;
+                padding: 10px 10px;
                 border-width: 5px;
                 width: 90vw;
                 box-sizing: border-box;
@@ -208,15 +204,8 @@
 
 
             #title {
-                font-size: clamp(2.5rem, 10vw, 5rem);
-                margin-bottom: 30px;
-            }
-
-
-            #weight-container {
-                padding: 20px 15px;
-                box-sizing: border-box;
-                width: 100%;
+                font-size: clamp(5.5rem, 12vw, 10rem);
+                line-height: 80px;
             }
 
 
@@ -228,6 +217,11 @@
             .unit {
                 font-size: 1.5rem;
                 margin-left: 5px;
+            }
+
+            .chest-coins {
+                width: 100vw;
+                height: auto;
             }
         }
 
@@ -249,13 +243,10 @@
 
     <div class="casino-board">
         <h1 id="title" style="letter-spacing: normal;">WE HAVE A JACKPOT WINNER!</h1>
-        <div id="weight-container">
-            <span id="weight">0.00</span><span class="unit">g</span>
-        </div>
     </div>
 
-    <div><img
-            style="filter: drop-shadow(0px 0px 32px #ffd700); position: absolute; bottom: 0; left: 0; width: 100vw; height: auto;"
+    <div><img class="chest-coins"
+            style="filter: drop-shadow(0px 0px 32px #ffd700); position: absolute; bottom: 0; left: 0;"
             src="./assets/chest-coins.png" alt=""></div>
 
     <script>
