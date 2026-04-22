@@ -3,10 +3,10 @@ import time
 import statistics
 from collections import deque
 
-ser = serial.Serial('/dev/ttyUSB1', 57600, timeout=1)
+ser = serial.Serial('/dev/ttyUSB0', 57600, timeout=1)
 serBuffer = deque()
 
-WEB_PATH = "/var/www/html/gold-2-cash/"
+WEB_PATH = "/opt/lampp/htdocs/arduino-test/"
 
 current_weight = "0"
 current_winner = "0"
@@ -67,7 +67,7 @@ while True:
                                 print(f"LIVE WEIGHT (AVG 3S): {avg_weight:.1f}g, Samples: {len(weights)}")
                         else:
                             # 3 seconds have passed! Lock the value
-                            is_locked = True
+                            # is_locked = True
                             show_weight(avg_weight)
                             current_weight = avg_weight
                             print(f"WEIGHT LOCKED AFTER 3S: {avg_weight:.1f}g (avg of {len(weights)} samples)")
