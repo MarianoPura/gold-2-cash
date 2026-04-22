@@ -21,6 +21,7 @@ void setup() {
   pinMode(BUTTON, INPUT_PULLUP);
   // pinMode(TARE, INPUT_PULLUP);
   // pinMode(BUTTONWEIGHT, INPUT_PULLUP);
+  pinMode(RESET, INPUT_PULLUP);
 
 
 }
@@ -40,11 +41,9 @@ void RESET_FUNC(){
 
   int currentState = digitalRead(RESET);
 
-  if(digitalRead(RESET, HIGH)){
-    Serial.println("RESET DONE");
-  }
-  ESP.restart();
-  lastResetState = currentState;
+  
+  
+
 
 }
 
@@ -55,7 +54,10 @@ void loop() {
     cmd.trim();
   }
 
-  // TARE_FUNC();
+  if(digitalRead(RESET) == LOW){
+    Serial.println("RESET DONE");
+    ESP.restart();  
+  }
   
   float weight = scale.get_units(10);
 
