@@ -72,6 +72,7 @@
             animation: titleBreathe 3s ease-in-out infinite alternate;
         }
 
+
         #weight-container {
             background: linear-gradient(135deg, #003181, #000c3b);
             border: 4px solid #b8860b;
@@ -263,7 +264,7 @@
     <canvas id="canvas"></canvas>
 
     <div class="casino-board">
-        <h1 id="title" style="letter-spacing: normal;">Gold For Cash</h1>
+        <h1 id="title" style="letter-spacing: normal; -webkit-text-stroke: 1px #ff4500;">Gold For Cash</h1>
         <div id="weight-container">
             <span id="weight">0</span><span class="unit">g</span>
         </div>

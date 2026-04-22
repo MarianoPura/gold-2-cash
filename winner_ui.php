@@ -69,12 +69,34 @@
             font-family: 'FuturaCyrillicBold', sans-serif;
             font-size: 6rem;
             text-transform: uppercase;
-            background: linear-gradient(to bottom, #fff7a1, #ffd700, #b8860b);
+            background: linear-gradient(to bottom, #fffac1ff, #ffd700, #fffac1ff);
             -webkit-background-clip: text;
             -webkit-text-fill-color: transparent;
             letter-spacing: 4px;
         }
 
+        .title-winner {
+            position: relative;
+            display: inline-block;
+            color: #000;
+            letter-spacing: normal;
+            -webkit-text-stroke: 1px #ff4500;
+        }
+
+        .title-winner::after {
+            content: "WE HAVE A JACKPOT WINNER!";
+            position: absolute;
+            left: 0;
+            top: 0;
+            z-index: -1;
+            background: linear-gradient(to bottom, #fffac1ff, #ffd700, #fffac1ff);
+            -webkit-background-clip: text;
+            background-clip: text;
+            -webkit-text-fill-color: transparent;
+            -webkit-text-stroke: 8px transparent;
+            text-shadow: -2px -2px 1px rgba(255, 234, 227, 0.6),
+                2px 2px 1px rgba(173, 43, 0, 0.5);
+        }
 
         #weight-container::before {
             content: 'WEIGHT';
@@ -242,7 +264,7 @@
     <canvas id="canvas"></canvas>
 
     <div class="casino-board">
-        <h1 id="title" style="letter-spacing: normal;">WE HAVE A JACKPOT WINNER!</h1>
+        <h1 id="title" class="title-winner">WE HAVE A JACKPOT WINNER!</h1>
     </div>
 
     <div><img class="chest-coins"
