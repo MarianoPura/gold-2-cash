@@ -73,6 +73,7 @@
             -webkit-background-clip: text;
             -webkit-text-fill-color: transparent;
             letter-spacing: 4px;
+            background-size: 100% 50px;
         }
 
         .title-winner {
@@ -105,7 +106,7 @@
             left: 50%;
             transform: translateX(-50%);
             background: #111;
-            border: 2px solid #b8860b;
+            border: 2px solid #e9ca4c;
             border-radius: 5px;
             padding: 2px 15px;
             font-size: 14px;
@@ -130,7 +131,7 @@
             font-size: 2rem;
             vertical-align: super;
             margin-left: 10px;
-            color: #ffd700;
+            color: #c2a72fff;
         }
 
 
@@ -228,7 +229,10 @@
             #title {
                 font-size: clamp(5.5rem, 12vw, 10rem);
                 line-height: 80px;
+                background-size: 100% 80px;
             }
+
+
 
 
             #weight {

@@ -70,12 +70,13 @@
             text-shadow: 0 0 20px rgba(255, 215, 0, 0.4);
             letter-spacing: 4px;
             animation: titleBreathe 3s ease-in-out infinite alternate;
+            background-size: 100% 30px;
         }
 
 
         #weight-container {
             background: linear-gradient(135deg, #003181, #000c3b);
-            border: 4px solid #b8860b;
+            border: 4px solid #e9ca4c;
             border-radius: 10px;
             padding: 30px 60px;
             display: inline-block;
@@ -115,7 +116,7 @@
             font-family: 'Arial', sans-serif;
             font-weight: bold;
             font-size: 4rem;
-            color: #a38914;
+            color: #c2a72fff;
             vertical-align: super;
             text-shadow: none;
             margin-left: 10px;
