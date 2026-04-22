@@ -1,10 +1,10 @@
 import serial
 import time
 import statistics
-from collections import Counter
+from collections import deque
 
-ser = serial.Serial('/dev/ttyUSB0', 57600, timeout=1)
-serLimit = []
+ser = serial.Serial('/dev/ttyUSB1', 57600, timeout=1)
+serBuffer = deque()
 
 WEB_PATH = "/var/www/html/gold-2-cash/"
 
@@ -12,20 +12,19 @@ current_weight = "0"
 current_winner = "0"
 is_locked = False
 capture_start_time = None
-def show_weight (weight):
+
+def show_weight(weight):
     with open(WEB_PATH + "weight.txt", "w") as f:
         weight = float(weight)
-        if (weight <= 0):
+        if weight <= 0:
             f.write("0")
         else:
             f.write(str(int(round(float(weight)))))
 
 def show_winner():
     path = WEB_PATH + "stats.txt"
-
     with open(path, "r") as f:
         value = f.read().strip()
-
     with open(path, "w") as f:
         if value == "1":
             f.write("0")
@@ -39,18 +38,23 @@ while True:
         if line.startswith("WEIGHT:"):
             weight = float(line.split(":")[1])
             curr_time = time.time()
-            serLimit.append((curr_time, weight))
+            
+            # Prevent empty scale readings from polluting the start of a weigh-in
+            if weight > 2.0 or capture_start_time is not None:
+                serBuffer.append((curr_time, weight))
+            else:
+                serBuffer.clear()
             
             # Keep a 3-second rolling window
-            while len(serLimit) > 0 and curr_time - serLimit[0][0] > 3.0:
-                serLimit.pop(0)
-
-            # Calculate mode (most common value)
-            rounded_data = [round(w[1], 1) for w in serLimit]
-            if rounded_data:
-                mode_weight = Counter(rounded_data).most_common(1)[0][0]
+            while len(serBuffer) > 0 and curr_time - serBuffer[0][0] > 3.0:
+                serBuffer.popleft()
+            
+            # Calculate average of all readings in the window
+            if serBuffer:
+                weights = [w[1] for w in serBuffer]
+                avg_weight = sum(weights) / len(weights)
                 
-                if mode_weight > 2.0: # Weight detected
+                if avg_weight > 2.0:  # Weight detected
                     if not is_locked:
                         if capture_start_time is None:
                             capture_start_time = curr_time
@@ -58,16 +62,15 @@ while True:
                         
                         # Live update for the first 3 seconds
                         if curr_time - capture_start_time < 3.0:
-                            if current_weight != mode_weight:
-                                show_weight(mode_weight)
-                                current_weight = mode_weight
-                                print("LIVE WEIGHT (MODE 3S):", mode_weight)
+                            if current_weight != avg_weight:
+                                current_weight = avg_weight
+                                print(f"LIVE WEIGHT (AVG 3S): {avg_weight:.1f}g, Samples: {len(weights)}")
                         else:
                             # 3 seconds have passed! Lock the value
                             is_locked = True
-                            show_weight(mode_weight)
-                            current_weight = mode_weight
-                            print("WEIGHT LOCKED AFTER 3S:", mode_weight)
+                            show_weight(avg_weight)
+                            current_weight = avg_weight
+                            print(f"WEIGHT LOCKED AFTER 3S: {avg_weight:.1f}g (avg of {len(weights)} samples)")
                 else:
                     # Weight removed - reset for next object
                     if is_locked or capture_start_time is not None:
@@ -75,7 +78,7 @@ while True:
                         capture_start_time = None
                         show_weight(0)
                         current_weight = 0
-                        serLimit.clear()
+                        serBuffer.clear()
                         print("READY FOR NEXT OBJECT")
             
         elif line.startswith("WINNER"):
@@ -90,7 +93,7 @@ while True:
             show_weight(0)
             current_weight = 0
             current_winner = "0"
-            serLimit.clear()
+            serBuffer.clear()
             # Directly reset the winner file to "0"
             with open(WEB_PATH + "stats.txt", "w") as f:
                 f.write("0")
