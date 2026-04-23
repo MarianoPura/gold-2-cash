@@ -79,7 +79,7 @@ while True:
                         show_weight(0)
                         current_weight = 0
                         serBuffer.clear()
-                        ser.write(b'RESET\n')
+                        # ser.write(b'RESET\n') removed for now to prevent reset every time weight is removed
                         print("READY FOR NEXT OBJECT")
             
         elif line.startswith("WINNER"):
