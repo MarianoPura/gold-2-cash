@@ -3,7 +3,7 @@ import time
 import statistics
 from collections import deque
 
-ser = serial.Serial('/dev/ttyUSB0', 57600, timeout=1)
+ser = serial.Serial('/dev/ttyUSB0', 115200, timeout=1)
 serBuffer = deque()
 
 WEB_PATH = "/opt/lampp/htdocs/arduino-test/"
@@ -19,7 +19,7 @@ def show_weight(weight):
         if weight <= 0:
             f.write("0")
         else:
-            f.write(str(int(round(float(weight)))))
+            f.write(str(int(float(weight))))
 
 def show_winner():
     path = WEB_PATH + "stats.txt"
@@ -40,13 +40,13 @@ while True:
             curr_time = time.time()
             
             # Prevent empty scale readings from polluting the start of a weigh-in
-            if weight > 2.0 or capture_start_time is not None:
+            if weight > 5.0 or capture_start_time is not None:
                 serBuffer.append((curr_time, weight))
             else:
                 serBuffer.clear()
             
             # Keep a 3-second rolling window
-            while len(serBuffer) > 0 and curr_time - serBuffer[0][0] > 3.0:
+            while len(serBuffer) > 0 and curr_time - serBuffer[0][0] > 0.0:
                 serBuffer.popleft()
             
             # Calculate average of all readings in the window
@@ -54,14 +54,14 @@ while True:
                 weights = [w[1] for w in serBuffer]
                 avg_weight = sum(weights) / len(weights)
                 
-                if avg_weight > 2.0:  # Weight detected
+                if avg_weight > 5.0:  # Weight detected
                     if not is_locked:
                         if capture_start_time is None:
                             capture_start_time = curr_time
                             print("WEIGHING STARTED...")
                         
                         # Live update for the first 3 seconds
-                        if curr_time - capture_start_time < 3.0:
+                        if curr_time - capture_start_time < 0.0:
                             if current_weight != avg_weight:
                                 current_weight = avg_weight
                                 print(f"LIVE WEIGHT (AVG 3S): {avg_weight:.1f}g, Samples: {len(weights)}")
@@ -79,6 +79,7 @@ while True:
                         show_weight(0)
                         current_weight = 0
                         serBuffer.clear()
+                        ser.write(b'RESET\n')
                         print("READY FOR NEXT OBJECT")
             
         elif line.startswith("WINNER"):

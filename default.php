@@ -265,7 +265,7 @@
     <div class="casino-board">
         <h1 id="title" style="letter-spacing: normal;">Gold For Cash</h1>
         <div id="weight-container">
-            <span id="weight">0</span><span class="unit">g</span>
+            <span id="weight">0</span><span class="unit">Grams</span>
         </div>
     </div>
     <div><img class="chest-coins"

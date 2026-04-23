@@ -5,15 +5,17 @@
 #define BUTTON 26
 // #define BUTTONWEIGHT 25
 #define RESET 17
+#define LED 18
 
 HX711 scale;
 
 float calibration_factor = 265.55;
 //108.55 iba pang stable calibration
-
+unsigned long lastWeightTime = 0;
+const int weightInterval = 100;
 
 void setup() {
-  Serial.begin(57600);
+  Serial.begin(115200);
   scale.begin(DT, SCK);
   scale.set_scale(calibration_factor);
   scale.tare();
@@ -22,8 +24,8 @@ void setup() {
   // pinMode(TARE, INPUT_PULLUP);
   // pinMode(BUTTONWEIGHT, INPUT_PULLUP);
   pinMode(RESET, INPUT_PULLUP);
-
-
+  pinMode(LED, OUTPUT);
+  digitalWrite(LED, HIGH);
 }
 
 // void TARE_FUNC() {
@@ -37,44 +39,37 @@ void setup() {
 //   lastTareState = currentState;
 // }
 
-void RESET_FUNC(){
-
-  int currentState = digitalRead(RESET);
-
-  
-  
-
-
-}
-
 void loop() {
 
   if (Serial.available()) {
     String cmd = Serial.readStringUntil('\n');
     cmd.trim();
+
+    if (cmd == "RESET") {
+      ESP.restart();
+    }
+
+    if (cmd == "TARE") {
+      scale.tare();
+    }
   }
 
-  if(digitalRead(RESET) == LOW){
+  if (digitalRead(RESET) == LOW) {
     Serial.println("RESET DONE");
-    ESP.restart();  
+    delay(50);
+    ESP.restart();
   }
-  
-  float weight = scale.get_units(10);
 
   if (digitalRead(BUTTON) == LOW) {
     Serial.println("WINNER");
-    delay(50);
   }
 
-  // if (digitalRead(BUTTONWEIGHT) == LOW){
-  //   Serial.print("WEIGHT:");
-  //   Serial.println(weight);
-  // }
-  delay(300);
-  
-  Serial.print("WEIGHT:");
-  Serial.println(weight);
-  
-  delay(50);
+  if (millis() - lastWeightTime > weightInterval) {
+    lastWeightTime = millis();
 
+    float weight = scale.get_units(5); 
+
+    Serial.print("WEIGHT:");
+    Serial.println(weight);
+  }
 }
