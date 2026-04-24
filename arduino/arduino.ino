@@ -7,7 +7,7 @@
 #define LOCKBTN 26
 HX711 scale;
 
-float calibration_factor = 265.53b n;
+float calibration_factor = 265.53;
 //224.55 sa maliit
 //265.55 sa malaki
 //108.55 iba pang stable calibration para sa 20kg
@@ -64,7 +64,7 @@ void loop() {
     cmd.trim();
 
     if (cmd == "RESET") {
-      scale.tare();
+      ESP.restart();
     }
   }
 
@@ -93,8 +93,7 @@ void loop() {
       if (millis() - lastActiveTime >= idleLimit) {
         Serial.println("IDLE RESTART");
         delay(100);
-        scale.tare();
-        lastActiveTime = millis();
+        ESP.restart();
       }
 
       Serial.print("WEIGHT:");
