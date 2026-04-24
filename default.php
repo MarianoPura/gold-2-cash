@@ -54,21 +54,21 @@
             box-shadow: 0 0 40px #ffd700, inset 0 0 20px #000;
             position: relative;
             z-index: 10;
-            animation: boardBreathe 4s ease-in-out infinite alternate;
-            margin-bottom: 250px;
+            animation: boardBreathe 2s ease-in-out infinite alternate;
         }
 
         #title {
             font-family: 'FuturaCyrillicBold', sans-serif;
             font-size: 5rem;
-            margin-bottom: 40px;
+            margin-bottom: 15px;
             margin-top: 0;
             text-transform: uppercase;
             background: linear-gradient(to bottom, #fef4b7, #e9ca4c, #fef4b7);
             -webkit-background-clip: text;
             -webkit-text-fill-color: transparent;
             text-shadow: 0 0 20px rgba(255, 215, 0, 0.4);
-            letter-spacing: 4px;
+            letter-spacing: 2px;
+            line-height: 100px;
             animation: titleBreathe 3s ease-in-out infinite alternate;
         }
 
@@ -110,14 +110,62 @@
             animation: ledFlicker 6s infinite;
         }
 
+        .unit-badge {
+            margin-top: 20px;
+            display: inline-block;
+            background: rgba(0, 12, 59, 0.6);
+            border: 3px solid #e9ca4c;
+            border-radius: 12px;
+            padding: 10px 40px;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.5),
+                0 0 20px rgba(233, 202, 76, 0.2),
+                inset 0 0 15px rgba(0, 0, 0, 0.8);
+            position: relative;
+            overflow: hidden;
+            z-index: 100;
+        }
+
+        .unit-badge::after {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: -150%;
+            width: 50%;
+            height: 100%;
+            background: linear-gradient(90deg,
+                    rgba(255, 255, 255, 0) 0%,
+                    rgba(255, 215, 0, 0.3) 50%,
+                    rgba(255, 255, 255, 0) 100%);
+            transform: skewX(-25deg);
+            animation: unitShine 4s infinite ease-in-out;
+        }
+
+        @keyframes unitShine {
+            0% {
+                left: -150%;
+            }
+
+            20% {
+                left: 150%;
+            }
+
+            100% {
+                left: 150%;
+            }
+        }
+
         .unit {
-            font-family: 'Arial', sans-serif;
-            font-weight: bold;
-            font-size: 4rem;
-            color: #a38914;
-            vertical-align: super;
-            text-shadow: none;
-            margin-left: 10px;
+            background: linear-gradient(to bottom, #fef4b7, #e9ca4c, #fef4b7);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            font-family: 'FuturaCyrillicBold', sans-serif;
+            font-size: 3.5rem;
+            font-weight: 900;
+            margin: 0;
+            letter-spacing: 4px;
+            text-transform: uppercase;
+            filter: drop-shadow(0 2px 4px rgba(0, 0, 0, 0.5));
+            line-height: 1;
         }
 
         @keyframes boardBreathe {
@@ -213,36 +261,42 @@
             }
 
             .casino-board {
-                padding: 40px 20px;
+                padding: 20px 20px;
                 border-width: 18px;
                 width: 90vw;
                 box-sizing: border-box;
-                margin-bottom: 150px;
+                margin-bottom: 10px;
             }
 
 
             #title {
-                font-size: clamp(6rem, 12vw, 10rem);
+                font-size: clamp(5rem, 10vw, 8rem);
                 margin-bottom: 30px;
-                line-height: 90px;
+                line-height: 70px;
             }
 
 
             #weight-container {
-                padding: 20px 15px;
+                padding: 15px 15px;
                 box-sizing: border-box;
                 width: 100%;
             }
 
 
             #weight {
-                font-size: clamp(4rem, 18vw, 8rem);
+                font-size: clamp(3rem, 18vw, 6rem);
             }
 
 
+            .unit-badge {
+                padding: 5px 20px;
+                border-width: 2px;
+                margin-top: 15px;
+            }
+
             .unit {
-                font-size: 1.5rem;
-                margin-left: 5px;
+                font-size: 1.8rem;
+                letter-spacing: 2px;
             }
 
             .chest-coins {
@@ -265,11 +319,15 @@
     <div class="casino-board">
         <h1 id="title" style="letter-spacing: normal;">Gold For Cash</h1>
         <div id="weight-container">
-            <span id="weight">0</span><span class="unit">Grams</span>
+            <span id="weight">0</span>
         </div>
     </div>
-    <div><img class="chest-coins"
-            style="filter: drop-shadow(0px 0px 32px #ffd700); position: absolute; bottom: 0; left: 0;"
+    <div class="unit-badge">
+        <p class="unit">Grams</p>
+    </div>
+    <div>
+        <img class="chest-coins"
+            style="filter: drop-shadow(0px 0px 82px #ffd700); position: absolute; bottom: 0; left: 0;"
             src="./assets/chest-coins.png" alt="">
     </div>
 
@@ -278,42 +336,45 @@
             let newVal = parseFloat(val);
             if (isNaN(newVal)) return;
 
-            if (targetWeight !== newVal) {
-                targetWeight = newVal;
-                currentWeight = 0;
-                if (!isAnimatingWeight) {
-                    animateWeightDisplay();
-                }
-            }
+            // Commented animation
+            // if (targetWeight !== newVal) {
+            //     targetWeight = newVal;
+            //     currentWeight = 0;
+            //     if (!isAnimatingWeight) {
+            //         animateWeightDisplay();
+            //     }
+            // }
+            document.getElementById("weight").innerText = newVal.toFixed(0);
         }
 
-        let currentWeight = 0;
-        let targetWeight = 0;
-        let isAnimatingWeight = false;
+        // Commented animation
+        // let currentWeight = 0;
+        // let targetWeight = 0;
+        // let isAnimatingWeight = false;
 
-        function animateWeightDisplay() {
-            let diff = targetWeight - currentWeight;
+        // function animateWeightDisplay() {
+        //     let diff = targetWeight - currentWeight;
 
-            if (Math.abs(diff) < 1) {
-                currentWeight = targetWeight;
-                document.getElementById("weight").innerText = currentWeight.toFixed(0);
-                isAnimatingWeight = false;
-                return;
-            }
+        //     if (Math.abs(diff) < 1) {
+        //         currentWeight = targetWeight;
+        //         document.getElementById("weight").innerText = currentWeight.toFixed(0);
+        //         isAnimatingWeight = false;
+        //         return;
+        //     }
 
-            isAnimatingWeight = true;
-            currentWeight += diff * 0.03;
-            document.getElementById("weight").innerText = currentWeight.toFixed(0);
+        //     isAnimatingWeight = true;
+        //     currentWeight += diff * 0.03;
+        //     document.getElementById("weight").innerText = currentWeight.toFixed(0);
 
-            requestAnimationFrame(animateWeightDisplay);
-        }
+        //     requestAnimationFrame(animateWeightDisplay);
+        // }
 
         setInterval(() => {
             fetch("weight.php")
                 .then(r => r.text())
                 .then(t => updateWeight(t))
                 .catch(e => console.log(e));
-        }, 200);
+        }, 100);
 
         setInterval(() => {
             fetch("winner.php")
