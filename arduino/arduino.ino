@@ -63,7 +63,7 @@ void loop() {
     cmd.trim();
 
     if (cmd == "RESET") {
-      ESP.restart();
+      scale.tare();
     }
   }
 
@@ -72,7 +72,7 @@ void loop() {
     resetPressed = false;
     Serial.println("RESET DONE");
     delay(50);
-    ESP.restart();
+    scale.tare();
   }
 
 //weight checking
@@ -91,7 +91,7 @@ void loop() {
       if (millis() - lastActiveTime >= idleLimit) {
         Serial.println("IDLE RESTART");
         delay(100);
-        ESP.restart();
+        scale.tare();
       }
 
       Serial.print("WEIGHT:");
