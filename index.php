@@ -15,7 +15,7 @@
   let currentStatus = "<?php echo $winner; ?>";
 
   function pollServer() {
-    fetch('winner.php')
+    fetch('stats.txt')
       .then(response => response.text())
       .then(newStatus => {
         if (newStatus !== currentStatus) {

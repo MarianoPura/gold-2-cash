@@ -370,14 +370,14 @@
         // }
 
         setInterval(() => {
-            fetch("weight.php")
+            fetch("weight.txt")
                 .then(r => r.text())
                 .then(t => updateWeight(t))
                 .catch(e => console.log(e));
         }, 100);
 
         setInterval(() => {
-            fetch("winner.php")
+            fetch("stats.txt")
                 .then(r => r.text())
                 .then(t => {
                     if (t.trim() == "1") {
