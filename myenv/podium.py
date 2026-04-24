@@ -30,10 +30,10 @@ while True:
             started = True
 
         if (started):
-            if (float(weight) == 5.0):
-                time.sleep(1)
-                ser.write(b'RESET\n')
+            if (float(weight) <= 0.0):
                 started = False
+                time.sleep(0.5)
+                ser.write(b'RESET\n')
     except Exception as e:
         pass
         

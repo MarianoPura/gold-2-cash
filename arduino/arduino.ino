@@ -7,10 +7,12 @@
 #define LOCKBTN 26
 HX711 scale;
 
-float calibration_factor = 224.55;
+float calibration_factor = 265.53;
 //224.55 sa maliit
 //265.55 sa malaki
 //108.55 iba pang stable calibration para sa 20kg
+unsigned long lastActiveTime = 0;
+const unsigned long idleLimit = 60000;
 unsigned long lastWeightTime = 0;
 const int weightInterval = 100;
 
@@ -21,15 +23,17 @@ unsigned long lastDebounceTimeReset = 0;
 unsigned long lastDebounceTimeLockBtn = 0;
 const int debounceDelay = 50;
 
+bool isIdle = false;
+int counter = 0;
 bool weightLocked = false;
 bool resetPressed = false;
 bool lockLed = false;
 
-bool hasWeight = false;
 float lastStableWeight = 0;
 
 void IRAM_ATTR onLockPress() {
   weightLocked = true;
+  digitalWrite(LED, HIGH);
 }
 
 void IRAM_ATTR onResetPress() {
@@ -45,7 +49,7 @@ void setup() {
   pinMode(RESET, INPUT_PULLUP);
   pinMode(LED, OUTPUT);
   pinMode(LOCKBTN, INPUT_PULLUP);
-  digitalWrite(LED, HIGH);
+  digitalWrite(LED, LOW);
 
   attachInterrupt(digitalPinToInterrupt(RESET), onResetPress, FALLING);
   attachInterrupt(digitalPinToInterrupt(LOCKBTN), onLockPress, FALLING);
@@ -80,15 +84,14 @@ void loop() {
 
       if (abs(weight) < 2) weight = 0;
 
-      if (!hasWeight && !lockLed && weight > 5) {
-        lockLed = true;
-        hasWeight = true;
-        digitalWrite(LED, HIGH);
+      if (weight > 0) {
+        lastActiveTime = millis();
       }
 
-      if (hasWeight && lockLed && weight == 0) {
-        hasWeight = false;
-        digitalWrite(LED, LOW);
+      if (millis() - lastActiveTime >= idleLimit) {
+        Serial.println("IDLE RESTART");
+        delay(100);
+        ESP.restart();
       }
 
       Serial.print("WEIGHT:");
