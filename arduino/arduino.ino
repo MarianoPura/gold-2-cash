@@ -37,7 +37,9 @@ void IRAM_ATTR onLockPress() {
   digitalWrite(LED, HIGH);
 }
 
-void IRAM_ATTR onResetPress() { resetPressed = true; }
+void IRAM_ATTR onResetPress() { 
+  resetPressed = true; 
+}
 
 void setup() {
   Serial.begin(115200);
@@ -64,8 +66,8 @@ void loop() {
     String cmd = Serial.readStringUntil('\n');
     cmd.trim();
 
-    if (cmd == "RESET") {
-      ESP.restart();
+    if (cmd == "TARE") {
+      digitalWrite(LED, LOW);
     }
   }
 
@@ -85,9 +87,6 @@ void loop() {
   if (!weightLocked) {
     if (millis() - lastWeightTime > weightInterval) {
       lastWeightTime = millis();
-
-      if (abs(weight) < 2)
-        weight = 0;
 
       if (weight > 0) {
         lastActiveTime = millis();
