@@ -484,9 +484,6 @@
             }
         }
 
-        // --- Robust polling for multi-week continuous operation ---
-        // Uses setTimeout (sequential) instead of setInterval to prevent
-        // request pile-up. Includes cache-busting & request timeouts.
 
         function pollWeight() {
             const controller = new AbortController();
