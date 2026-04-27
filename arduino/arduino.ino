@@ -7,10 +7,10 @@
 #define LOCKBTN 26
 HX711 scale;
 
-float calibration_factor = 265.53b n;
-//224.55 sa maliit
-//265.55 sa malaki
-//108.55 iba pang stable calibration para sa 20kg
+float calibration_factor = 226.56;
+// 224.55 sa maliit
+// 265.55 sa malaki
+// 108.55 iba pang stable calibration para sa 20kg
 unsigned long lastActiveTime = 0;
 const unsigned long idleLimit = 60000;
 unsigned long lastWeightTime = 0;
@@ -36,9 +36,7 @@ void IRAM_ATTR onLockPress() {
   digitalWrite(LED, HIGH);
 }
 
-void IRAM_ATTR onResetPress() {
-  resetPressed = true;
-}
+void IRAM_ATTR onResetPress() { resetPressed = true; }
 
 void setup() {
   Serial.begin(115200);
@@ -58,7 +56,7 @@ void setup() {
 void loop() {
 
   float weight = scale.get_units(5);
-//reset sa 0
+  // reset sa 0
   if (Serial.available()) {
     String cmd = Serial.readStringUntil('\n');
     cmd.trim();
@@ -68,7 +66,7 @@ void loop() {
     }
   }
 
-//reset
+  // reset
   if (resetPressed) {
     resetPressed = false;
     weight = 0;
@@ -79,12 +77,13 @@ void loop() {
     ESP.restart();
   }
 
-//weight checking
-  if (!weightLocked){
+  // weight checking
+  if (!weightLocked) {
     if (millis() - lastWeightTime > weightInterval) {
       lastWeightTime = millis();
 
-      if (abs(weight) < 2) weight = 0;
+      if (abs(weight) < 2)
+        weight = 0;
 
       if (weight > 0) {
         lastActiveTime = millis();
@@ -101,5 +100,4 @@ void loop() {
       Serial.println(weight);
     }
   }
-  
 }

@@ -3,18 +3,17 @@ import time
 
 ser = serial.Serial('/dev/ttyUSB0', 115200, timeout=1)
 
-WEB_PATH = "/opt/lampp/htdocs/arduino-test/myenv/"
+WEB_PATH = "/var/www/html/gold-2-cash/myenv"
 
 current_weight = "0"
-started = False
 
 def show_weight (weight):
-    with open(WEB_PATH + "../weight.txt", "w") as f:
+    with open(WEB_PATH + "/../weight.txt", "w") as f:
         weight = float(weight)
         if (weight <= 5):
             f.write("0")
         else:
-            f.write(str(int(float(weight))))
+            f.write(str(int(round(weight))))
 
 while True:
     try:
@@ -25,15 +24,6 @@ while True:
             current_weight = weight
             show_weight(weight)
             print("WEIGHT SAVED:", weight)
-
-        if (float(weight) >= 5.0):
-            started = True
-
-        if (started):
-            if (float(weight) <= 0.0):
-                started = False
-                time.sleep(0.5)
-                ser.write(b'RESET\n')
     except Exception as e:
         pass
         
