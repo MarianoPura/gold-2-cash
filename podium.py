@@ -6,6 +6,7 @@ WEB_PATH = "/srv/http/gold-2-cash/"
 
 current_weight = "0"
 weight = "0"
+started = False
 
 def show_weight (weight):
     with open(WEB_PATH + "/weight.txt", "w") as f:
@@ -24,6 +25,14 @@ while True:
             current_weight = weight
             show_weight(weight)
             print("WEIGHT SAVED:", weight)
+
+        if float(weight) >= 5.0:
+            started = True
+
+        if started and float(weight) <= 0.0:
+            started = False
+            time.sleep(0.5)
+            ser.write(b'RESET\n')
 
 
     except Exception as e:
