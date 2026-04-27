@@ -412,6 +412,50 @@
                 width: clamp(280px, 95vw, 350px);
             }
         }
+
+        @media (max-width: 890px) {
+            .chest-coins {
+                height: 220px;
+            }
+
+            .gold-text {
+                width: 85%;
+                top: 50%;
+            }
+
+            .casino-board {
+                width: clamp(240px, 85vw, 350px);
+                bottom: 55px;
+            }
+
+            .unit-badge {
+                margin-top: -60px;
+            }
+
+            .gram-number {
+                width: clamp(250px, 85vw, 320px);
+                min-height: 90px;
+                padding: 25px 25px;
+            }
+
+            #weight {
+                font-size: clamp(2.5rem, 15vw, 5rem);
+            }
+
+            #weight.five-digits {
+                font-size: clamp(2rem, 12vw, 3.5rem);
+            }
+
+            .unit {
+                font-size: 2.5rem;
+                letter-spacing: 2px;
+            }
+
+            .unit::after {
+                font-size: 2.5rem;
+                letter-spacing: 2px;
+            }
+        }
     </style>
 </head>
 
@@ -464,7 +508,7 @@
             })
                 .then(r => r.text())
                 .then(t => updateWeight(t))
-                .catch(() => {})
+                .catch(() => { })
                 .finally(() => {
                     clearTimeout(timeout);
                     setTimeout(pollWeight, 100);
@@ -486,7 +530,7 @@
                         window.location.reload();
                     }
                 })
-                .catch(() => {})
+                .catch(() => { })
                 .finally(() => {
                     clearTimeout(timeout);
                     setTimeout(pollWinner, 200);
