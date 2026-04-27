@@ -418,9 +418,9 @@
 <body>
     <canvas id="canvas"></canvas>
 
-    <div><img class="top-logo" src="./assets/Okada_Manila_logo.png" alt=""></div>
+    <div><img class="top-logo" src="./assets/Okada_Manila_logo.webp" alt=""></div>
     <div class="casino-board">
-        <img class="gold-text" src="./assets/gold-for-cash-text.png" alt="">
+        <img class="gold-text" src="./assets/gold-for-cash-text.webp" alt="">
     </div>
     <div class="unit-badge">
         <div class="gram-number">
@@ -431,7 +431,7 @@
     <div>
         <img class="chest-coins"
             style="filter: drop-shadow(0px 0px 82px #8be0ff); position: absolute; bottom: 0; left: 0;"
-            src="./assets/chest-coins.png" alt="">
+            src="./assets/chest-coins.webp" alt="">
     </div>
 
     <script>
@@ -450,23 +450,49 @@
             }
         }
 
-        setInterval(() => {
-            fetch("weight.txt")
+        // --- Robust polling for multi-week continuous operation ---
+        // Uses setTimeout (sequential) instead of setInterval to prevent
+        // request pile-up. Includes cache-busting & request timeouts.
+
+        function pollWeight() {
+            const controller = new AbortController();
+            const timeout = setTimeout(() => controller.abort(), 3000);
+
+            fetch("weight.txt?_=" + Date.now(), {
+                cache: "no-store",
+                signal: controller.signal
+            })
                 .then(r => r.text())
                 .then(t => updateWeight(t))
-                .catch(e => console.log(e));
-        }, 100);
+                .catch(() => {})
+                .finally(() => {
+                    clearTimeout(timeout);
+                    setTimeout(pollWeight, 100);
+                });
+        }
+        pollWeight();
 
-        setInterval(() => {
-            fetch("stats.txt")
+        function pollWinner() {
+            const controller = new AbortController();
+            const timeout = setTimeout(() => controller.abort(), 3000);
+
+            fetch("stats.txt?_=" + Date.now(), {
+                cache: "no-store",
+                signal: controller.signal
+            })
                 .then(r => r.text())
                 .then(t => {
                     if (t.trim() == "1") {
                         window.location.reload();
                     }
                 })
-                .catch(e => console.log(e));
-        }, 200);
+                .catch(() => {})
+                .finally(() => {
+                    clearTimeout(timeout);
+                    setTimeout(pollWinner, 200);
+                });
+        }
+        pollWinner();
 
         const canvas = document.getElementById("canvas");
         const ctx = canvas.getContext("2d");
@@ -526,3 +552,4 @@
 </body>
 
 </html>
+<!-- new -->

@@ -1,0 +1,7 @@
+# Prevent browser from caching weight.txt and stats.txt
+# These are polled every 100-200ms and must never be cached
+<FilesMatch "(weight|stats)\.txt$">
+    Header set Cache-Control "no-store, no-cache, must-revalidate, max-age=0"
+    Header set Pragma "no-cache"
+    Header set Expires "0"
+</FilesMatch>
