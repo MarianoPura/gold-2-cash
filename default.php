@@ -10,8 +10,10 @@
         @import url('fonts/fonts.css');
 
         body {
-            background-color: #000c3b;
-            background-image: radial-gradient(circle at center, #003181 0%, #000c3b 100%);
+            /* background-color: #000c3b; */
+            background-image: url('./assets/bg-blue.png');
+            background-size: cover;
+            background-position: center;
             color: #fff;
             text-align: center;
             font-family: 'Playfair Display', serif;
@@ -42,24 +44,25 @@
 
 
         .chest-coins {
-            content: url('./assets/chest-coins-2.png');
-            display: inline-block;
+            content: url('./assets/okada-building-mobile.png');
         }
 
         .casino-board {
-            border: 18px solid #ffd700;
-            border-radius: 20px;
-            padding: 50px 80px;
-            background: linear-gradient(135deg, #003181, #000c3b);
-            box-shadow: 0 0 40px #ffd700, inset 0 0 20px #000;
+            background: url('./assets/circle-background.png') no-repeat center;
+            background-size: contain;
+            width: clamp(300px, 80vw, 500px);
+            aspect-ratio: 1 / 1;
             position: relative;
-            z-index: 10;
-            animation: boardBreathe 2s ease-in-out infinite alternate;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            margin: 0 auto;
         }
 
         #title {
             font-family: 'FuturaCyrillicBold', sans-serif;
-            font-size: 5rem;
+            font-size: 6rem;
             margin-bottom: 15px;
             margin-top: 0;
             text-transform: uppercase;
@@ -101,7 +104,7 @@
 
         #weight {
             font-family: 'Orbitron', sans-serif;
-            font-size: 8rem;
+            font-size: 6rem;
             color: #ffda44;
             text-shadow: 0 0 20px rgba(255, 215, 0, 0.8);
             letter-spacing: 5px;
@@ -110,16 +113,26 @@
             animation: ledFlicker 6s infinite;
         }
 
-        .unit-badge {
-            margin-top: 20px;
-            display: inline-block;
-            background: rgba(0, 12, 59, 0.6);
+        .gram-number {
+            background: rgba(5, 84, 210, 0.6);
             border: 3px solid #e9ca4c;
-            border-radius: 12px;
-            padding: 10px 40px;
             box-shadow: 0 10px 30px rgba(0, 0, 0, 0.5),
                 0 0 20px rgba(233, 202, 76, 0.2),
                 inset 0 0 15px rgba(0, 0, 0, 0.8);
+            border-radius: 12px;
+            height: auto;
+            min-height: 120px;
+            width: clamp(300px, 80vw, 400px);
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            padding: 10px 20px;
+        }
+
+        .unit-badge {
+            margin-top: 20px;
+            display: inline-block;
+            padding: 10px 20px;
             position: relative;
             overflow: hidden;
             z-index: 100;
@@ -130,14 +143,31 @@
             position: absolute;
             top: 0;
             left: -150%;
-            width: 50%;
+            width: 80%;
             height: 100%;
-            background: linear-gradient(90deg,
-                    rgba(255, 255, 255, 0) 0%,
-                    rgba(255, 215, 0, 0.3) 50%,
-                    rgba(255, 255, 255, 0) 100%);
             transform: skewX(-25deg);
             animation: unitShine 4s infinite ease-in-out;
+        }
+
+        .top-logo {
+            position: absolute;
+            top: 20px;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 100px;
+            height: auto;
+            padding: 0;
+            margin: 0;
+        }
+
+        .gold-text {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            width: 90%;
+            height: auto;
+            z-index: 10;
         }
 
         @keyframes unitShine {
@@ -155,17 +185,57 @@
         }
 
         .unit {
+            border: 3px solid #e9ca4c;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.5),
+                0 0 20px rgba(233, 202, 76, 0.2),
+                inset 0 0 15px rgba(0, 0, 0, 0.8);
+            border-radius: 12px;
+            padding: 10px 10px;
+            position: relative;
+            top: -20px;
+            display: inline-block;
             background: linear-gradient(to bottom, #fef4b7, #e9ca4c, #fef4b7);
             -webkit-background-clip: text;
             -webkit-text-fill-color: transparent;
+            background-clip: text;
             font-family: 'FuturaCyrillicBold', sans-serif;
-            font-size: 3.5rem;
-            font-weight: 900;
+            font-size: 3rem;
+            font-weight: 700;
             margin: 0;
             letter-spacing: 4px;
             text-transform: uppercase;
             filter: drop-shadow(0 2px 4px rgba(0, 0, 0, 0.5));
             line-height: 1;
+            z-index: 1;
+        }
+
+        .unit::after {
+            border-radius: 10px;
+            background: rgba(5, 84, 210, 0.6);
+            padding: 10px 10px;
+            position: absolute;
+            top: 0;
+            left: 0;
+            content: attr(data-text);
+            text-transform: uppercase;
+            font-family: 'FuturaCyrillicBold', sans-serif;
+            font-size: 3rem;
+            font-weight: 900;
+            letter-spacing: 4px;
+            line-height: 1;
+            z-index: -1;
+            -webkit-text-fill-color: transparent;
+            color: transparent;
+
+            text-shadow:
+                0 -2px 0 #ffe87a,
+                -2px 0 0 #d4a800,
+                2px 0 0 #d4a800,
+                0 2px 0 #7a5500,
+                -1px -1px 0 #f0c800,
+                1px -1px 0 #f0c800,
+                -1px 1px 0 #a07a10,
+                1px 1px 0 #a07a10;
         }
 
         @keyframes boardBreathe {
@@ -257,15 +327,19 @@
 
         @media (max-width: 1100px) {
             .chest-coins {
-                content: url('./assets/chest-coins.png');
+                height: 200px;
+                content: url('./assets/okada-building-mobile-original.png');
             }
 
             .casino-board {
-                padding: 20px 20px;
                 border-width: 18px;
-                width: 90vw;
+                width: clamp(300px, 85vw, 450px);
                 box-sizing: border-box;
-                margin-bottom: 10px;
+            }
+
+            .gold-text {
+                width: 85%;
+                top: 50%;
             }
 
 
@@ -289,13 +363,27 @@
 
 
             .unit-badge {
-                padding: 5px 20px;
+                padding: 10px 20px;
                 border-width: 2px;
-                margin-top: 15px;
+                margin-top: -40px;
+            }
+
+            .gram-number {
+                min-height: 100px;
+                width: clamp(280px, 85vw, 400px);
+            }
+
+            #weight.five-digits {
+                font-size: clamp(2rem, 13vw, 4rem);
             }
 
             .unit {
-                font-size: 1.8rem;
+                font-size: 1.5rem;
+                letter-spacing: 2px;
+            }
+
+            .unit::after {
+                font-size: 1.5rem;
                 letter-spacing: 2px;
             }
 
@@ -307,7 +395,21 @@
 
         @media (max-width: 900px) {
             .chest-coins {
-                content: url('./assets/chest-coins-mobile.png');
+                height: 270px;
+                content: url('./assets/okada-building-mobile-original.png');
+            }
+
+            .gold-text {
+                width: 65vw;
+                top: 50%;
+            }
+
+            .casino-board {
+                bottom: 40px;
+                padding: 60px 30px;
+                border-width: 12px;
+                margin: 20px auto;
+                width: clamp(280px, 95vw, 350px);
             }
         }
     </style>
@@ -316,18 +418,19 @@
 <body>
     <canvas id="canvas"></canvas>
 
+    <div><img class="top-logo" src="./assets/Okada_Manila_logo.png" alt=""></div>
     <div class="casino-board">
-        <h1 id="title" style="letter-spacing: normal;">Gold For Cash</h1>
-        <div id="weight-container">
-            <span id="weight">0</span>
-        </div>
+        <img class="gold-text" src="./assets/gold-for-cash-text.png" alt="">
     </div>
     <div class="unit-badge">
-        <p class="unit">Grams</p>
+        <div class="gram-number">
+            <span id="weight"></span>
+        </div>
+        <p class="unit" data-text="Grams">Grams</p>
     </div>
     <div>
         <img class="chest-coins"
-            style="filter: drop-shadow(0px 0px 82px #ffd700); position: absolute; bottom: 0; left: 0;"
+            style="filter: drop-shadow(0px 0px 82px #8be0ff); position: absolute; bottom: 0; left: 0;"
             src="./assets/chest-coins.png" alt="">
     </div>
 
@@ -336,38 +439,16 @@
             let newVal = parseFloat(val);
             if (isNaN(newVal)) return;
 
-            // Commented animation
-            // if (targetWeight !== newVal) {
-            //     targetWeight = newVal;
-            //     currentWeight = 0;
-            //     if (!isAnimatingWeight) {
-            //         animateWeightDisplay();
-            //     }
-            // }
-            document.getElementById("weight").innerText = newVal.toFixed(0);
+            let textVal = newVal.toFixed(0);
+            let weightEl = document.getElementById("weight");
+            weightEl.innerText = textVal;
+
+            if (textVal.length >= 5) {
+                weightEl.classList.add("five-digits");
+            } else {
+                weightEl.classList.remove("five-digits");
+            }
         }
-
-        // Commented animation
-        // let currentWeight = 0;
-        // let targetWeight = 0;
-        // let isAnimatingWeight = false;
-
-        // function animateWeightDisplay() {
-        //     let diff = targetWeight - currentWeight;
-
-        //     if (Math.abs(diff) < 1) {
-        //         currentWeight = targetWeight;
-        //         document.getElementById("weight").innerText = currentWeight.toFixed(0);
-        //         isAnimatingWeight = false;
-        //         return;
-        //     }
-
-        //     isAnimatingWeight = true;
-        //     currentWeight += diff * 0.03;
-        //     document.getElementById("weight").innerText = currentWeight.toFixed(0);
-
-        //     requestAnimationFrame(animateWeightDisplay);
-        // }
 
         setInterval(() => {
             fetch("weight.txt")
@@ -417,6 +498,9 @@
             });
         }
 
+        const particleImg = new Image();
+        particleImg.src = './assets/particles.png';
+
         function animateDust() {
             requestAnimationFrame(animateDust);
             ctx.clearRect(0, 0, cw, ch);
@@ -429,10 +513,11 @@
                 if (p.x < -10) p.x = cw + 10;
                 if (p.x > cw + 10) p.x = -10;
 
-                ctx.beginPath();
-                ctx.arc(p.x, p.y, p.r, 0, Math.PI * 2);
-                ctx.fillStyle = `rgba(255, 215, 0, ${p.opacity})`;
-                ctx.fill();
+                ctx.save();
+                ctx.globalAlpha = p.opacity;
+                let size = p.r * 2;
+                ctx.drawImage(particleImg, p.x - p.r, p.y - p.r, size, size);
+                ctx.restore();
             });
         }
 
