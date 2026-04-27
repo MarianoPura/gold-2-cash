@@ -7,10 +7,10 @@
 #define LOCKBTN 26
 HX711 scale;
 
-float calibration_factor = 226.56;
-// 224.55 sa maliit
-// 265.55 sa malaki
-// 108.55 iba pang stable calibration para sa 20kg
+float calibration_factor = 265.53;
+//224.55 sa maliit
+//265.55 sa malaki
+//108.55 iba pang stable calibration para sa 20kg
 unsigned long lastActiveTime = 0;
 const unsigned long idleLimit = 60000;
 unsigned long lastWeightTime = 0;
