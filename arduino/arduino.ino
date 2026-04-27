@@ -67,7 +67,7 @@ void loop() {
     cmd.trim();
 
     if (cmd == "TARE") {
-      digitalWrite(LED, LOW);
+      digitalWrite(RESETLED, LOW);
     }
   }
 
