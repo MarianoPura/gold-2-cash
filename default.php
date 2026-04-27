@@ -11,7 +11,7 @@
 
         body {
             /* background-color: #000c3b; */
-            background-image: url('./assets/bg-blue.png');
+            background-image: url('./assets/bg-blue.webp');
             background-size: cover;
             background-position: center;
             color: #fff;
@@ -44,11 +44,11 @@
 
 
         .chest-coins {
-            content: url('./assets/okada-building-mobile.png');
+            content: url('./assets/okada-building-mobile.webp');
         }
 
         .casino-board {
-            background: url('./assets/circle-background.png') no-repeat center;
+            background: url('./assets/circle-background.webp') no-repeat center;
             background-size: contain;
             width: clamp(300px, 80vw, 500px);
             aspect-ratio: 1 / 1;
@@ -328,7 +328,7 @@
         @media (max-width: 1100px) {
             .chest-coins {
                 height: 200px;
-                content: url('./assets/okada-building-mobile-original.png');
+                content: url('./assets/okada-building-mobile-original.webp');
             }
 
             .casino-board {
@@ -396,7 +396,7 @@
         @media (max-width: 900px) {
             .chest-coins {
                 height: 270px;
-                content: url('./assets/okada-building-mobile-original.png');
+                content: url('./assets/okada-building-mobile-original.webp');
             }
 
             .gold-text {
@@ -412,15 +412,49 @@
                 width: clamp(280px, 95vw, 350px);
             }
         }
+
+        @media (max-width: 860px) {
+            .chest-coins {
+                height: 220px;
+            }
+
+            .gold-text {
+                width: 80%;
+                top: 50%;
+            }
+
+            .casino-board {
+                width: clamp(240px, 85vw, 310px);
+                bottom: 55px;
+            }
+
+            .unit-badge {
+                margin-top: -60px;
+            }
+
+            .gram-number {
+                width: clamp(250px, 85vw, 320px);
+                min-height: 90px;
+                padding: 5px 15px;
+            }
+
+            #weight {
+                font-size: clamp(2.5rem, 15vw, 4.5rem);
+            }
+
+            #weight.five-digits {
+                font-size: clamp(2rem, 12vw, 3.5rem);
+            }
+        }
     </style>
 </head>
 
 <body>
     <canvas id="canvas"></canvas>
 
-    <div><img class="top-logo" src="./assets/Okada_Manila_logo.png" alt=""></div>
+    <div><img class="top-logo" src="./assets/Okada_Manila_logo.webp" alt=""></div>
     <div class="casino-board">
-        <img class="gold-text" src="./assets/gold-for-cash-text.png" alt="">
+        <img class="gold-text" src="./assets/gold-for-cash-text.webp" alt="">
     </div>
     <div class="unit-badge">
         <div class="gram-number">
@@ -431,7 +465,7 @@
     <div>
         <img class="chest-coins"
             style="filter: drop-shadow(0px 0px 82px #8be0ff); position: absolute; bottom: 0; left: 0;"
-            src="./assets/chest-coins.png" alt="">
+            src="./assets/chest-coins.webp" alt="">
     </div>
 
     <script>
@@ -450,23 +484,49 @@
             }
         }
 
-        setInterval(() => {
-            fetch("weight.php")
+        // --- Robust polling for multi-week continuous operation ---
+        // Uses setTimeout (sequential) instead of setInterval to prevent
+        // request pile-up. Includes cache-busting & request timeouts.
+
+        function pollWeight() {
+            const controller = new AbortController();
+            const timeout = setTimeout(() => controller.abort(), 3000);
+
+            fetch("weight.php?_=" + Date.now(), {
+                cache: "no-store",
+                signal: controller.signal
+            })
                 .then(r => r.text())
                 .then(t => updateWeight(t))
-                .catch(e => console.log(e));
-        }, 100);
+                .catch(() => { })
+                .finally(() => {
+                    clearTimeout(timeout);
+                    setTimeout(pollWeight, 100);
+                });
+        }
+        pollWeight();
 
-        setInterval(() => {
-            fetch("winner.php")
+        function pollWinner() {
+            const controller = new AbortController();
+            const timeout = setTimeout(() => controller.abort(), 3000);
+
+            fetch("winner.php?_=" + Date.now(), {
+                cache: "no-store",
+                signal: controller.signal
+            })
                 .then(r => r.text())
                 .then(t => {
                     if (t.trim() == "1") {
                         window.location.reload();
                     }
                 })
-                .catch(e => console.log(e));
-        }, 200);
+                .catch(() => { })
+                .finally(() => {
+                    clearTimeout(timeout);
+                    setTimeout(pollWinner, 200);
+                });
+        }
+        pollWinner();
 
         const canvas = document.getElementById("canvas");
         const ctx = canvas.getContext("2d");
@@ -499,7 +559,7 @@
         }
 
         const particleImg = new Image();
-        particleImg.src = './assets/particles.png';
+        particleImg.src = './assets/particles.webp';
 
         function animateDust() {
             requestAnimationFrame(animateDust);
