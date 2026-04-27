@@ -5,9 +5,10 @@
 #define RESET 17
 #define LED 18
 #define LOCKBTN 26
+#define RESETLED 21
 HX711 scale;
 
-float calibration_factor = 265.53;
+float calibration_factor = 226.55;
 //224.55 sa maliit
 //265.55 sa malaki
 //108.55 iba pang stable calibration para sa 20kg
@@ -47,8 +48,10 @@ void setup() {
   pinMode(RESET, INPUT_PULLUP);
   pinMode(LED, OUTPUT);
   pinMode(LOCKBTN, INPUT_PULLUP);
+  pinMode(RESETLED, OUTPUT);
   digitalWrite(LED, LOW);
 
+  digitalWrite(RESETLED, HIGH);
   attachInterrupt(digitalPinToInterrupt(RESET), onResetPress, FALLING);
   attachInterrupt(digitalPinToInterrupt(LOCKBTN), onLockPress, FALLING);
 }
@@ -68,6 +71,7 @@ void loop() {
 
   // reset
   if (resetPressed) {
+    digitalWrite(RESETLED, LOW);
     resetPressed = false;
     weight = 0;
     weightLocked = false;
