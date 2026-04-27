@@ -22,10 +22,6 @@ while True:
         if line.startswith("WEIGHT:"):
             weight = line.split(":")[1]
             current_weight = weight
-
-            if float(weight) < -3.0 :
-                ser.write(b'TARE\n')
-
             show_weight(weight)
             print("WEIGHT SAVED:", weight)
 

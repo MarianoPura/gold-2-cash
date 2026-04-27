@@ -40,7 +40,6 @@ void IRAM_ATTR onLockPress() {
 void IRAM_ATTR onResetPress() { 
   resetPressed = true; 
 }
-
 void setup() {
   Serial.begin(115200);
   scale.begin(DT, SCK);
@@ -61,14 +60,18 @@ void setup() {
 void loop() {
 
   float weight = scale.get_units(5);
-  // reset sa 0
-  if (Serial.available()) {
-    String cmd = Serial.readStringUntil('\n');
-    cmd.trim();
+  // // reset sa 0
+  // if (Serial.available()) {
+  //   String cmd = Serial.readStringUntil('\n');
+  //   cmd.trim();
 
-    if (cmd == "TARE") {
-      digitalWrite(RESETLED, LOW);
-    }
+  //   if (cmd == "TARE") {
+  //     digitalWrite(RESETLED, LOW);
+  //   }
+  // }
+
+  if (weight <= -3.0) {
+    digitalWrite(RESETLED, LOW);
   }
 
   // reset
