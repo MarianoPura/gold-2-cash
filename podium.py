@@ -26,15 +26,6 @@ while True:
             show_weight(weight)
             print("WEIGHT SAVED:", weight)
 
-        if float(weight) >= 5.0:
-            started = True
-
-        if started and float(weight) <= 0.0:
-            started = False
-            time.sleep(0.5)
-            ser.write(b'RESET\n')
-
-
     except Exception as e:
         pass
         
