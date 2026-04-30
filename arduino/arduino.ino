@@ -8,7 +8,7 @@
 #define RESETLED 21
 HX711 scale;
 
-float calibration_factor = 226.55;
+float calibration_factor = 105.55;
 //224.55 sa maliit
 //265.55 sa malaki
 //108.55 iba pang stable calibration para sa 20kg
@@ -62,7 +62,11 @@ void loop() {
   float weight = scale.get_units(5);
   // // reset sa 0
   
-  if (started && weight <= 2) {
+  if (weight > 5) {
+     started = true;
+  }
+
+  if (started && weight <= 5) {
     digitalWrite(RESETLED, LOW);
   }
 
@@ -84,11 +88,10 @@ void loop() {
 
   // weight checking
   if (!weightLocked) {
-    started = true;
     if (millis() - lastWeightTime > weightInterval) {
       lastWeightTime = millis();
 
-      if (weight > 0) {
+      if (weight > 5) {
         lastActiveTime = millis();
       }
 
