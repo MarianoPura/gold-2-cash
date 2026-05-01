@@ -81,7 +81,7 @@ cat > "$AUTOSTART_DIR/gold-2-cash-ui.desktop" <<EOF
 Type=Application
 Name=Gold-2-Cash UI (default.php)
 Comment=Autostart for default.php on system boot
-Exec=chromium --kiosk --incognito --disable-infobars "http://localhost/gold-2-cash/default.php"
+Exec=chromium --password-store=basic --kiosk --incognito --disable-infobars "http://localhost/gold-2-cash/default.php"
 X-GNOME-Autostart-enabled=true
 StartupNotify=false
 Terminal=false
