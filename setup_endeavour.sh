@@ -46,11 +46,10 @@ ACTION=="add", SUBSYSTEM=="usb", DRIVER=="usb-serial", ATTR{../power/autosuspend
 ACTION=="add", SUBSYSTEM=="usb", DRIVER=="cdc_acm", ATTR{power/autosuspend}="-1"
 EOF'
 
-# Disable USB autosuspend globally via kernel parameter
-if ! grep -q "usbcore.autosuspend=-1" /etc/default/grub; then
-    sudo sed -i 's/GRUB_CMDLINE_LINUX_DEFAULT="/GRUB_CMDLINE_LINUX_DEFAULT="usbcore.autosuspend=-1 /' /etc/default/grub
-    sudo grub-mkconfig -o /boot/grub/grub.cfg
-    echo "USB autosuspend disabled globally via GRUB."
+# Disable USB autosuspend globally via modprobe.d (works for GRUB and systemd-boot)
+if ! grep -q "autosuspend=-1" /etc/modprobe.d/usbcore.conf 2>/dev/null; then
+    echo "options usbcore autosuspend=-1" | sudo tee /etc/modprobe.d/usbcore.conf
+    echo "USB autosuspend disabled globally via modprobe.d."
 fi
 
 sudo udevadm control --reload-rules
