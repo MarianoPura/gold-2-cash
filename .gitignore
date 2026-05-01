@@ -1,1 +1,4 @@
-*.txt
+weight.txt
+stats.txt
+myenv/
+__pycache__/
