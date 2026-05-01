@@ -36,14 +36,29 @@ echo "Starting and enabling Apache and PHP-FPM services..."
 sudo systemctl enable --now php-fpm
 sudo systemctl enable --now httpd
 
-# Set up udev rules to allow full access to serial ports without password/group login issues
-# Also disable USB autosuspend for serial devices so ESP32 stays alive when idle
-echo "Setting up udev rules for serial port access and disabling USB autosuspend..."
+# Set up udev rules:
+#   - Allow full access to serial ports (no sudo needed)
+#   - Disable USB autosuspend so ESP32 stays alive with no keyboard/mouse
+#   - Create a PERMANENT /dev/esp32 symlink so the port never changes
+echo "Setting up udev rules for ESP32..."
 sudo bash -c 'cat > /etc/udev/rules.d/50-serial-usb.rules <<EOF
+# Permissions
 KERNEL=="ttyUSB[0-9]*", MODE="0666"
 KERNEL=="ttyACM[0-9]*", MODE="0666"
+
+# Disable autosuspend for USB serial devices
 ACTION=="add", SUBSYSTEM=="usb", DRIVER=="usb-serial", ATTR{../power/autosuspend}="-1"
 ACTION=="add", SUBSYSTEM=="usb", DRIVER=="cdc_acm", ATTR{power/autosuspend}="-1"
+
+# Permanent /dev/esp32 symlink — covers all common ESP32 USB chips:
+# CP2102 (most common ESP32 devboards)
+SUBSYSTEM=="tty", ATTRS{idVendor}=="10c4", ATTRS{idProduct}=="ea60", SYMLINK+="esp32", MODE="0666"
+# CH340 / CH340G
+SUBSYSTEM=="tty", ATTRS{idVendor}=="1a86", ATTRS{idProduct}=="7523", SYMLINK+="esp32", MODE="0666"
+# CH341
+SUBSYSTEM=="tty", ATTRS{idVendor}=="1a86", ATTRS{idProduct}=="5523", SYMLINK+="esp32", MODE="0666"
+# Native USB (ESP32-S2 / ESP32-S3)
+SUBSYSTEM=="tty", ATTRS{idVendor}=="303a", SYMLINK+="esp32", MODE="0666"
 EOF'
 
 # Disable USB autosuspend globally via modprobe.d (works for GRUB and systemd-boot)
