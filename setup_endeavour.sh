@@ -36,37 +36,12 @@ echo "Starting and enabling Apache and PHP-FPM services..."
 sudo systemctl enable --now php-fpm
 sudo systemctl enable --now httpd
 
-# Set up udev rules:
-#   - Allow full access to serial ports (no sudo needed)
-#   - Disable USB autosuspend so ESP32 stays alive with no keyboard/mouse
-#   - Create a PERMANENT /dev/esp32 symlink so the port never changes
-echo "Setting up udev rules for ESP32..."
+# Set up udev rules to allow full access to serial ports without password/group login issues
+echo "Setting up udev rules for serial port access..."
 sudo bash -c 'cat > /etc/udev/rules.d/50-serial-usb.rules <<EOF
-# Permissions
 KERNEL=="ttyUSB[0-9]*", MODE="0666"
 KERNEL=="ttyACM[0-9]*", MODE="0666"
-
-# Disable autosuspend for USB serial devices
-ACTION=="add", SUBSYSTEM=="usb", DRIVER=="usb-serial", ATTR{../power/autosuspend}="-1"
-ACTION=="add", SUBSYSTEM=="usb", DRIVER=="cdc_acm", ATTR{power/autosuspend}="-1"
-
-# Permanent /dev/esp32 symlink — covers all common ESP32 USB chips:
-# CP2102 (most common ESP32 devboards)
-SUBSYSTEM=="tty", ATTRS{idVendor}=="10c4", ATTRS{idProduct}=="ea60", SYMLINK+="esp32", MODE="0666"
-# CH340 / CH340G
-SUBSYSTEM=="tty", ATTRS{idVendor}=="1a86", ATTRS{idProduct}=="7523", SYMLINK+="esp32", MODE="0666"
-# CH341
-SUBSYSTEM=="tty", ATTRS{idVendor}=="1a86", ATTRS{idProduct}=="5523", SYMLINK+="esp32", MODE="0666"
-# Native USB (ESP32-S2 / ESP32-S3)
-SUBSYSTEM=="tty", ATTRS{idVendor}=="303a", SYMLINK+="esp32", MODE="0666"
 EOF'
-
-# Disable USB autosuspend globally via modprobe.d (works for GRUB and systemd-boot)
-if ! grep -q "autosuspend=-1" /etc/modprobe.d/usbcore.conf 2>/dev/null; then
-    echo "options usbcore autosuspend=-1" | sudo tee /etc/modprobe.d/usbcore.conf
-    echo "USB autosuspend disabled globally via modprobe.d."
-fi
-
 sudo udevadm control --reload-rules
 sudo udevadm trigger
 
@@ -119,38 +94,18 @@ StartupNotify=false
 Terminal=false
 EOF
 
-# 4. Systemd service for podium.py + udev rule to restart it when USB device appears
-APP_USER="$USER"
-cat << SVCEOF | sudo tee /etc/systemd/system/gold2cash-podium.service
-[Unit]
-Description=Gold-2-Cash Podium Weight Reader
-After=local-fs.target
-StartLimitIntervalSec=0
-
-[Service]
-Type=simple
-User=$APP_USER
-WorkingDirectory=$APP_DIR
-ExecStart=$APP_DIR/myenv/bin/python -u $APP_DIR/podium.py
-Restart=always
-RestartSec=5
-StandardOutput=journal
-StandardError=journal
-
-[Install]
-WantedBy=multi-user.target
-SVCEOF
-
-# Udev rule: restart service the moment ESP32 USB is detected on boot or plug-in
-sudo bash -c 'cat > /etc/udev/rules.d/99-gold2cash-podium.rules <<EOF
-ACTION=="add", SUBSYSTEM=="tty", KERNEL=="ttyUSB[0-9]*", RUN+="/bin/systemctl restart gold2cash-podium.service"
-ACTION=="add", SUBSYSTEM=="tty", KERNEL=="ttyACM[0-9]*", RUN+="/bin/systemctl restart gold2cash-podium.service"
-EOF'
-
-sudo udevadm control --reload-rules
-sudo systemctl daemon-reload
-sudo systemctl enable --now gold2cash-podium.service
-echo "Gold-2-Cash Podium systemd service installed and enabled."
+# 4. Autostart for podium.py
+cat > "$AUTOSTART_DIR/gold-2-cash-podium.desktop" <<EOF
+[Desktop Entry]
+Type=Application
+Name=Gold-2-Cash Podium
+Comment=Autostart for podium.py on system boot
+Exec=$APP_DIR/start_podium.sh
+Path=$APP_DIR
+X-GNOME-Autostart-enabled=true
+StartupNotify=false
+Terminal=true
+EOF
 
 echo "========================================"
 echo "Setup Complete!"

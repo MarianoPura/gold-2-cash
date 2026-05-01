@@ -17,36 +17,9 @@ def show_weight (weight):
         else:
             f.write(str(int(weight_val)))
 
-ser = None
-PORT = '/dev/esp32'  # permanent symlink set by udev rule in setup_endeavour.sh
+ser = serial.Serial('/dev/ttyUSB0', 115200, timeout=1)
 
 while True:
-    if ser is None:
-        try:
-            if not os.path.exists(PORT):
-                print(f"Waiting for ESP32 on {PORT}...")
-                time.sleep(2)
-                continue
-
-            # Wait for device to fully enumerate before opening
-            print(f"Found {PORT}, waiting for it to settle...")
-            time.sleep(3)
-
-            # Open with dsrdtr=False so the port open does NOT toggle DTR
-            # (toggling DTR resets the ESP32 silently)
-            ser = serial.Serial(
-                PORT, 115200, timeout=1,
-                dsrdtr=False,   # do NOT toggle DTR on open
-                rtscts=False    # do NOT toggle RTS on open
-            )
-            time.sleep(1)
-            ser.reset_input_buffer()  # discard any boot garbage
-            print(f"Connected to {PORT}.")
-        except Exception:
-            print("Waiting for USB device...")
-            time.sleep(2)
-            continue
-
     try:
         line = ser.readline().decode('utf-8', errors='replace').rstrip()
 
@@ -56,11 +29,6 @@ while True:
             show_weight(weight)
             print("WEIGHT SAVED:", weight)
 
-    except serial.SerialException:
-        print("USB device disconnected. Reconnecting...")
-        if ser:
-            ser.close()
-        ser = None
     except Exception as e:
         pass
         
