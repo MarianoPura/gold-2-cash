@@ -1,0 +1,106 @@
+#!/bin/bash
+
+# Ensure the script is run with normal user privileges, asking for sudo when needed
+if [ "$EUID" -eq 0 ]; then
+  echo "Please do not run this script directly as root. Run as your normal user."
+  exit 1
+fi
+
+APP_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
+
+echo "========================================"
+echo "1. Installing Apache, PHP, PHP-FPM, and Python..."
+echo "========================================"
+if ! sudo pacman -Syu --noconfirm apache php php-fpm python python-pip chromium; then
+    echo "Error: Failed to download or install system packages. Please check your internet connection."
+    exit 1
+fi
+
+echo "Configuring Apache for PHP-FPM..."
+# Enable proxy and proxy_fcgi modules required for PHP-FPM
+sudo sed -i 's/^#LoadModule proxy_module/LoadModule proxy_module/' /etc/httpd/conf/httpd.conf
+sudo sed -i 's/^#LoadModule proxy_fcgi_module/LoadModule proxy_fcgi_module/' /etc/httpd/conf/httpd.conf
+
+# Add PHP-FPM configuration to Apache if it doesn't exist
+if ! grep -q "conf/extra/php-fpm.conf" /etc/httpd/conf/httpd.conf; then
+    sudo bash -c 'cat > /etc/httpd/conf/extra/php-fpm.conf <<EOF
+DirectoryIndex index.php index.html
+<FilesMatch \.php$>
+    SetHandler "proxy:unix:/run/php-fpm/php-fpm.sock|fcgi://localhost/"
+</FilesMatch>
+EOF'
+    echo "Include conf/extra/php-fpm.conf" | sudo tee -a /etc/httpd/conf/httpd.conf
+fi
+
+echo "Starting and enabling Apache and PHP-FPM services..."
+sudo systemctl enable --now php-fpm
+sudo systemctl enable --now httpd
+
+# Set up udev rules to allow full access to serial ports without password/group login issues
+echo "Setting up udev rules for serial port access..."
+sudo bash -c 'cat > /etc/udev/rules.d/50-serial-usb.rules <<EOF
+KERNEL=="ttyUSB[0-9]*", MODE="0666"
+KERNEL=="ttyACM[0-9]*", MODE="0666"
+EOF'
+sudo udevadm control --reload-rules
+sudo udevadm trigger
+
+echo "========================================"
+echo "2. Installing requirements of the python app..."
+echo "========================================"
+if [ -d "$APP_DIR" ]; then
+    cd "$APP_DIR"
+    
+    # Create virtual environment if it doesn't exist
+    if [ ! -d "myenv" ]; then
+        python -m venv myenv
+    fi
+    
+    # Activate and install requirements
+    source myenv/bin/activate
+    if [ -f "requirements.txt" ]; then
+        if ! pip install -r requirements.txt; then
+            echo "Error: Failed to install Python dependencies from requirements.txt."
+            exit 1
+        fi
+    fi
+    deactivate
+else
+    echo "Error: Directory $APP_DIR does not exist. Please check the path."
+fi
+
+echo "========================================"
+echo "3 & 4. Adding autostarts..."
+echo "========================================"
+AUTOSTART_DIR="$HOME/.config/autostart"
+mkdir -p "$AUTOSTART_DIR"
+
+# 3. Autostart for default.php
+cat > "$AUTOSTART_DIR/gold-2-cash-ui.desktop" <<EOF
+[Desktop Entry]
+Type=Application
+Name=Gold-2-Cash UI (default.php)
+Comment=Autostart for default.php on system boot
+Exec=chromium --kiosk --incognito --disable-infobars "http://localhost/gold-2-cash/default.php"
+X-GNOME-Autostart-enabled=true
+StartupNotify=false
+Terminal=false
+EOF
+
+# 4. Autostart for podium.py
+cat > "$AUTOSTART_DIR/gold-2-cash-podium.desktop" <<EOF
+[Desktop Entry]
+Type=Application
+Name=Gold-2-Cash Podium
+Comment=Autostart for podium.py on system boot
+Exec=bash -c 'cd $APP_DIR && source myenv/bin/activate && python podium.py'
+X-GNOME-Autostart-enabled=true
+StartupNotify=false
+Terminal=true
+EOF
+
+echo "========================================"
+echo "Setup Complete!"
+echo "Note: The autostart will open the web page and terminal on your next login."
+echo "You might need to log out and log back in for group changes (serial ports) to take effect."
+echo "========================================"
