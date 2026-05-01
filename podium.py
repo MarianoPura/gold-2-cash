@@ -1,7 +1,9 @@
 import serial
 import time
 
-WEB_PATH = "/srv/http/gold-2-cash/"
+import os
+
+WEB_PATH = os.path.dirname(os.path.abspath(__file__))
 
 current_weight = "0"
 weight = "0"
