@@ -1,7 +1,6 @@
 import serial
 import time
 
-ser = serial.Serial('/dev/ttyUSB0', 115200, timeout=1)
 WEB_PATH = "/srv/http/gold-2-cash/"
 
 current_weight = "0"
@@ -16,7 +15,18 @@ def show_weight (weight):
         else:
             f.write(str(int(weight_val)))
 
+ser = None
+
 while True:
+    if ser is None:
+        try:
+            ser = serial.Serial('/dev/ttyUSB0', 115200, timeout=1)
+            print("Connected to USB device.")
+        except Exception:
+            print("Waiting for USB device...")
+            time.sleep(2)
+            continue
+
     try:
         line = ser.readline().decode('utf-8', errors='replace').rstrip()
 
@@ -26,6 +36,11 @@ while True:
             show_weight(weight)
             print("WEIGHT SAVED:", weight)
 
+    except serial.SerialException:
+        print("USB device disconnected. Reconnecting...")
+        if ser:
+            ser.close()
+        ser = None
     except Exception as e:
         pass
         
