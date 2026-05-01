@@ -11,7 +11,7 @@ APP_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
 echo "========================================"
 echo "1. Installing Apache, PHP, PHP-FPM, and Python..."
 echo "========================================"
-if ! sudo pacman -Syu --noconfirm apache php php-fpm python python-pip chromium; then
+if ! sudo pacman -Syu --needed --noconfirm apache php php-fpm python python-pip python-pyserial chromium; then
     echo "Error: Failed to download or install system packages. Please check your internet connection."
     exit 1
 fi
@@ -53,7 +53,7 @@ if [ -d "$APP_DIR" ]; then
     
     # Create virtual environment if it doesn't exist
     if [ ! -d "myenv" ]; then
-        python -m venv myenv
+        python -m venv myenv --system-site-packages
     fi
     
     # Activate and install requirements
