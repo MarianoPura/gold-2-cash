@@ -104,17 +104,28 @@ StartupNotify=false
 Terminal=false
 EOF
 
-# 4. Autostart for podium.py
-cat > "$AUTOSTART_DIR/gold-2-cash-podium.desktop" <<EOF
-[Desktop Entry]
-Type=Application
-Name=Gold-2-Cash Podium
-Comment=Autostart for podium.py on system boot
-Exec=bash -c 'cd $APP_DIR && source myenv/bin/activate && python podium.py'
-X-GNOME-Autostart-enabled=true
-StartupNotify=false
-Terminal=true
+# 4. Systemd service for podium.py (reliable, starts on boot before desktop)
+cat << EOF | sudo tee /etc/systemd/system/gold2cash-podium.service
+[Unit]
+Description=Gold-2-Cash Podium Weight Reader
+After=network.target
+StartLimitIntervalSec=0
+
+[Service]
+Type=simple
+User=$USER
+WorkingDirectory=$APP_DIR
+ExecStart=$APP_DIR/myenv/bin/python $APP_DIR/podium.py
+Restart=always
+RestartSec=3
+
+[Install]
+WantedBy=multi-user.target
 EOF
+
+sudo systemctl daemon-reload
+sudo systemctl enable --now gold2cash-podium.service
+echo "Gold-2-Cash Podium systemd service installed and enabled."
 
 echo "========================================"
 echo "Setup Complete!"
