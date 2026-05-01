@@ -70,7 +70,14 @@ else
 fi
 
 echo "========================================"
-echo "3 & 4. Adding autostarts..."
+echo "3. Creating initial data files..."
+echo "========================================"
+touch "$APP_DIR/weight.txt" "$APP_DIR/stats.txt"
+chmod 666 "$APP_DIR/weight.txt" "$APP_DIR/stats.txt"
+echo "0" > "$APP_DIR/weight.txt"
+
+echo "========================================"
+echo "4 & 5. Adding autostarts..."
 echo "========================================"
 AUTOSTART_DIR="$HOME/.config/autostart"
 mkdir -p "$AUTOSTART_DIR"
