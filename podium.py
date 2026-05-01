@@ -22,8 +22,19 @@ ser = None
 while True:
     if ser is None:
         try:
-            ser = serial.Serial('/dev/ttyUSB0', 115200, timeout=1)
-            print("Connected to USB device.")
+            port = None
+            for candidate in ['/dev/ttyUSB0', '/dev/ttyACM0', '/dev/ttyUSB1', '/dev/ttyACM1']:
+                if os.path.exists(candidate):
+                    port = candidate
+                    break
+
+            if port is None:
+                print("Waiting for USB device...")
+                time.sleep(2)
+                continue
+
+            ser = serial.Serial(port, 115200, timeout=1)
+            print(f"Connected to {port}.")
         except Exception:
             print("Waiting for USB device...")
             time.sleep(2)
