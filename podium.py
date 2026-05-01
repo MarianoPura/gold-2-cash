@@ -34,6 +34,10 @@ while True:
                 continue
 
             ser = serial.Serial(port, 115200, timeout=1)
+            ser.dtr = False  # prevent ESP32 reset on connect
+            ser.rts = False
+            time.sleep(2)    # wait for ESP32 to stabilize
+            ser.reset_input_buffer()  # discard boot garbage
             print(f"Connected to {port}.")
         except Exception:
             print("Waiting for USB device...")
