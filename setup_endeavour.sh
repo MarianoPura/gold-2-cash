@@ -37,11 +37,20 @@ sudo systemctl enable --now php-fpm
 sudo systemctl enable --now httpd
 
 # Set up udev rules to allow full access to serial ports without password/group login issues
-echo "Setting up udev rules for serial port access..."
+# Also disable USB autosuspend for serial devices so ESP32 stays alive when idle
+echo "Setting up udev rules for serial port access and disabling USB autosuspend..."
 sudo bash -c 'cat > /etc/udev/rules.d/50-serial-usb.rules <<EOF
 KERNEL=="ttyUSB[0-9]*", MODE="0666"
 KERNEL=="ttyACM[0-9]*", MODE="0666"
+ACTION=="add", SUBSYSTEM=="usb", DRIVER=="usb-serial", ATTR{../power/autosuspend}="-1"
+ACTION=="add", SUBSYSTEM=="usb", DRIVER=="cdc_acm", ATTR{power/autosuspend}="-1"
 EOF'
+
+# Disable USB autosuspend globally via modprobe.d
+if ! grep -q "autosuspend=-1" /etc/modprobe.d/usbcore.conf 2>/dev/null; then
+    echo "options usbcore autosuspend=-1" | sudo tee /etc/modprobe.d/usbcore.conf
+    echo "USB autosuspend disabled globally via modprobe.d."
+fi
 sudo udevadm control --reload-rules
 sudo udevadm trigger
 
