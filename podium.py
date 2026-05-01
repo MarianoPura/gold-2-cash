@@ -33,11 +33,20 @@ while True:
                 time.sleep(2)
                 continue
 
-            ser = serial.Serial(port, 115200, timeout=1)
-            ser.dtr = False  # prevent ESP32 reset on connect
-            ser.rts = False
-            time.sleep(2)    # wait for ESP32 to stabilize
-            ser.reset_input_buffer()  # discard boot garbage
+            # Wait 3s for device to fully enumerate before opening
+            # (prevents connecting mid-enumeration which causes a missed reset)
+            print(f"Found {port}, waiting for it to settle...")
+            time.sleep(3)
+
+            # Open with dsrdtr=False so the port open does NOT toggle DTR
+            # (toggling DTR resets the ESP32 silently)
+            ser = serial.Serial(
+                port, 115200, timeout=1,
+                dsrdtr=False,   # do NOT toggle DTR on open
+                rtscts=False    # do NOT toggle RTS on open
+            )
+            time.sleep(1)
+            ser.reset_input_buffer()  # discard any boot garbage
             print(f"Connected to {port}.")
         except Exception:
             print("Waiting for USB device...")
