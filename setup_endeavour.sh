@@ -53,7 +53,7 @@ if [ -d "$APP_DIR" ]; then
     
     # Create virtual environment if it doesn't exist
     if [ ! -d "myenv" ]; then
-        python -m venv myenv --system-site-packages
+        python -m venv myenv
     fi
     
     # Activate and install requirements
