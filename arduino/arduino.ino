@@ -8,7 +8,7 @@
 #define RESETLED 21
 HX711 scale;
 
-float calibration_factor = 105.55;
+float calibration_factor = 105.96;
 //224.55 sa maliit
 //265.55 sa malaki
 //108.55 iba pang stable calibration para sa 20kg
@@ -41,7 +41,7 @@ void IRAM_ATTR onResetPress() {
   resetPressed = true; 
 }
 void setup() {
-  Serial.begin(115200);
+  Serial.begin(9200);
   scale.begin(DT, SCK);
   scale.set_scale(calibration_factor);
   scale.tare();
