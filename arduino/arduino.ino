@@ -8,7 +8,7 @@
 #define RESETLED 21
 HX711 scale;
 
-float calibration_factor = 105.96;
+float calibration_factor = 105.79;
 //224.55 sa maliit
 //265.55 sa malaki
 //108.55 iba pang stable calibration para sa 20kg
