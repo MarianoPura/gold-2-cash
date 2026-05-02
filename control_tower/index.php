@@ -1,7 +1,14 @@
 <?php
 // control_tower/index.php
-// Detect local IP to guess the subnet
-$local_ip = explode('.', $_SERVER['SERVER_ADDR'] ?? '192.168.1.1');
+
+// Attempt to get a real network IP, not just 127.0.0.1
+$local_ip_raw = $_SERVER['SERVER_ADDR'] ?? '';
+if (!$local_ip_raw || strpos($local_ip_raw, '127.0.') === 0 || $local_ip_raw === '::1') {
+    // If we are on localhost, try to find the real IP via shell
+    $local_ip_raw = exec("hostname -I | awk '{print $1}'") ?: '192.168.1.1';
+}
+
+$local_ip = explode('.', $local_ip_raw);
 $subnet = $local_ip[0] . '.' . $local_ip[1] . '.' . $local_ip[2];
 ?>
 <!DOCTYPE html>

@@ -3,16 +3,23 @@
 const PC_GRID = document.getElementById('pc-grid');
 const SCAN_STATUS = document.getElementById('scan-status');
 
-// Configuration
-const SUB_NET = '192.168.1'; // We'll try to detect this or let the user config it
-const IP_RANGE = [1, 254]; 
+// Configuration - We scan multiple common subnets
+const SCAN_RANGES = [
+    SUB_NET,        // Detected subnet (e.g. 192.168.1)
+    '10.42.0',      // Default Linux Hotspot subnet
+    '192.168.4'     // Common ESP32/IoT subnet
+];
+const IP_START = 1;
+const IP_END = 254; 
 
 let foundDevices = new Set();
 
 async function checkDevice(ip) {
+    if (foundDevices.has(ip)) return; // Don't re-scan if already found
+
     try {
         const controller = new AbortController();
-        const timeoutId = setTimeout(() => controller.abort(), 2000); // 2s timeout per check
+        const timeoutId = setTimeout(() => controller.abort(), 1500); // 1.5s timeout
 
         const response = await fetch(`http://${ip}/gold-2-cash/control_tower/agent.php?action=status`, {
             signal: controller.signal
@@ -20,11 +27,12 @@ async function checkDevice(ip) {
 
         if (response.ok) {
             const data = await response.json();
+            foundDevices.add(ip);
             updateDeviceCard(ip, data);
             return true;
         }
     } catch (e) {
-        // Device not found or agent not running
+        // Device not found
     }
     return false;
 }
@@ -45,45 +53,46 @@ function updateDeviceCard(ip, data) {
         
         <div class="pc-stats">
             <div class="stat-row"><span>Uptime</span> <span>${data.uptime}</span></div>
-            <div class="stat-row"><span>Current Weight</span> <span>${data.weight}kg</span></div>
+            <div class="stat-row"><span>Weight</span> <span>${data.weight}kg</span></div>
             <div class="stat-row"><span>Status</span> <span>ONLINE</span></div>
         </div>
 
         <div class="controls">
             <button onclick="sendAction('${ip}', 'rotate')">Rotate Screen</button>
             <button onclick="sendAction('${ip}', 'restart_podium')">Restart Podium</button>
-            <button onclick="sendAction('${ip}', 'reboot')" class="danger">Reboot System</button>
+            <button onclick="sendAction('${ip}', 'reboot')" class="danger">Reboot</button>
             <button onclick="checkDevice('${ip}')">Refresh</button>
         </div>
     `;
 }
 
 async function sendAction(ip, action) {
-    if (action === 'reboot' && !confirm(`Are you sure you want to reboot ${ip}?`)) return;
+    if (action === 'reboot' && !confirm(`Are you sure?`)) return;
     
     try {
         const response = await fetch(`http://${ip}/gold-2-cash/control_tower/agent.php?action=${action}`);
         const result = await response.json();
         alert(result.message || result.error);
-        
-        // Refresh status after action
-        setTimeout(() => checkDevice(ip), 1000);
+        setTimeout(() => checkDevice(ip), 2000);
     } catch (e) {
-        alert('Action failed: Could not connect to agent.');
+        alert('Action failed.');
     }
 }
 
 async function scanNetwork() {
     SCAN_STATUS.innerText = 'Scanning Network...';
     
-    // We scan in chunks to avoid overwhelming the browser
-    const chunkSize = 20;
-    for (let i = IP_RANGE[0]; i <= IP_RANGE[1]; i += chunkSize) {
-        const promises = [];
-        for (let j = i; j < i + chunkSize && j <= IP_RANGE[1]; j++) {
-            promises.push(checkDevice(`${SUB_NET}.${j}`));
+    for (const range of SCAN_RANGES) {
+        if (!range || range.startsWith('127.0')) continue;
+        
+        const chunkSize = 30;
+        for (let i = IP_START; i <= IP_END; i += chunkSize) {
+            const promises = [];
+            for (let j = i; j < i + chunkSize && j <= IP_END; j++) {
+                promises.push(checkDevice(`${range}.${j}`));
+            }
+            await Promise.all(promises);
         }
-        await Promise.all(promises);
     }
     
     SCAN_STATUS.innerText = 'Scan Complete';
@@ -91,6 +100,4 @@ async function scanNetwork() {
 
 // Initial Scan
 scanNetwork();
-
-// Auto-refresh every 30 seconds
-setInterval(scanNetwork, 30000);
+setInterval(scanNetwork, 60000);
