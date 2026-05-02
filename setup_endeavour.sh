@@ -86,7 +86,22 @@ chmod 666 "$APP_DIR/weight.txt" "$APP_DIR/stats.txt"
 echo "0" > "$APP_DIR/weight.txt"
 
 echo "========================================"
-echo "4 & 5. Adding autostarts..."
+echo "4. Disabling KDE Wallet for Kiosk Mode..."
+echo "========================================"
+mkdir -p "$HOME/.config"
+if cat > "$HOME/.config/kwalletrc" <<EOF
+[Wallet]
+Enabled=false
+First Use=false
+EOF
+then
+    echo "KDE Wallet disabled successfully."
+else
+    echo "Error: Failed to disable KDE Wallet."
+fi
+
+echo "========================================"
+echo "5. Adding autostarts..."
 echo "========================================"
 AUTOSTART_DIR="$HOME/.config/autostart"
 mkdir -p "$AUTOSTART_DIR"
