@@ -103,38 +103,27 @@ StartupNotify=false
 Terminal=false
 EOF
 
-# 4. Systemd service for podium.py + udev rule to restart it when USB device appears
-APP_USER="$USER"
-cat << SVCEOF | sudo tee /etc/systemd/system/gold2cash-podium.service
-[Unit]
-Description=Gold-2-Cash Podium Weight Reader
-After=local-fs.target
-StartLimitIntervalSec=0
+# 4. Autostart for podium.py
+chmod +x "$APP_DIR/start_podium.sh"
+cat > "$AUTOSTART_DIR/gold-2-cash-podium.desktop" <<EOF
+[Desktop Entry]
+Type=Application
+Name=Gold-2-Cash Podium (Weight Reader)
+Comment=Autostart for weight reading script
+Exec=$APP_DIR/start_podium.sh
+X-GNOME-Autostart-enabled=true
+StartupNotify=false
+Terminal=false
+EOF
 
-[Service]
-Type=simple
-User=$APP_USER
-WorkingDirectory=$APP_DIR
-ExecStart=$APP_DIR/myenv/bin/python -u $APP_DIR/podium.py
-Restart=always
-RestartSec=5
-StandardOutput=journal
-StandardError=journal
-
-[Install]
-WantedBy=multi-user.target
-SVCEOF
-
-# Udev rule: restart service the moment ESP32 USB is detected on boot or plug-in
-sudo bash -c 'cat > /etc/udev/rules.d/99-gold2cash-podium.rules <<EOF
-ACTION=="add", SUBSYSTEM=="tty", KERNEL=="ttyUSB[0-9]*", RUN+="/bin/systemctl restart gold2cash-podium.service"
-ACTION=="add", SUBSYSTEM=="tty", KERNEL=="ttyACM[0-9]*", RUN+="/bin/systemctl restart gold2cash-podium.service"
-EOF'
-
+# Cleanup: Remove old systemd service and udev restart rule if they exist
+sudo systemctl disable --now gold2cash-podium.service 2>/dev/null
+sudo rm -f /etc/systemd/system/gold2cash-podium.service
+sudo rm -f /etc/udev/rules.d/99-gold2cash-podium.rules
 sudo udevadm control --reload-rules
 sudo systemctl daemon-reload
-sudo systemctl enable --now gold2cash-podium.service
-echo "Gold-2-Cash Podium systemd service installed and enabled."
+
+echo "Gold-2-Cash Podium autostart entry created and systemd service removed."
 
 echo "========================================"
 echo "Setup Complete!"
