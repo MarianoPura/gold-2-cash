@@ -6,4 +6,11 @@ if [ -d "myenv" ]; then
     source myenv/bin/activate
 fi
 
-exec python podium.py
+# Run in a loop so that "pkill" from the Control Tower 
+# triggers a restart instead of a permanent stop.
+while true; do
+    echo "Starting Podium Script..."
+    python podium.py
+    echo "Podium script exited. Restarting in 2 seconds..."
+    sleep 2
+done
